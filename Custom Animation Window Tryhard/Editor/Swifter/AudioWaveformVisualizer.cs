@@ -38,11 +38,10 @@ class AudioWaveformVisualizer
     
     float SampleAudioClipAtTime(AudioClip clip, float time)
     {
-        int sampleRate = clip.frequency;
         int channels = clip.channels;
 
         // Calculate the sample index based on the time
-        int sampleIndex = Mathf.FloorToInt(time * sampleRate * 2);
+        int sampleIndex = Mathf.FloorToInt(AudioClipUtility.SecondsToSamplePosition(clip, time));
 
         // Create an array to hold the samples
         float[] samples = new float[channels];
