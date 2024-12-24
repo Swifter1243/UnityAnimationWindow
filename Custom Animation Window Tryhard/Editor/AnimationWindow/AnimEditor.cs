@@ -224,7 +224,7 @@ namespace UnityEditor.Enemeteen {
 				Rect contentLayoutRect = GUILayoutUtility.GetRect(contentWidth, contentWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
 
 				Rect? audioWaveformRect = null;
-				if (state.audioControlsState.m_isAudioEnabled)
+				if (state.audioControlsState.m_isAudioEnabled && !state.animatorIsOptimized && !m_State.disabled)
 				{
 					audioWaveformRect = GUILayoutUtility.GetRect(contentWidth, 80);
 				}
