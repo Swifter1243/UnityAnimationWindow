@@ -38,18 +38,9 @@ class AudioWaveformVisualizer
     
     float SampleAudioClipAtTime(AudioClip clip, float time)
     {
-        int channels = clip.channels;
-
-        // Calculate the sample index based on the time
-        int sampleIndex = Mathf.FloorToInt(AudioClipUtility.SecondsToSamplePosition(clip, time));
-
-        // Create an array to hold the samples
-        float[] samples = new float[channels];
-        
-        // Read a small block of samples
-        clip.GetData(samples, sampleIndex / channels);
-
-        // Return the first channel's amplitude (absolute value for volume)
+        int samplePosition = Mathf.FloorToInt(AudioClipUtility.SecondsToSamplePosition(clip, time));
+        float[] samples = new float[clip.channels];
+        clip.GetData(samples, samplePosition);
         return Mathf.Abs(samples[0]);
     }
 
