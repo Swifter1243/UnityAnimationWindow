@@ -320,6 +320,9 @@ namespace UnityEditorInternal.Enemeteen {
 				m_ControlInterface = CreateInstance(typeof(AnimationWindowControl)) as AnimationWindowControl;
 			m_ControlInterface.state = this;
 			m_ControlInterface.OnEnable();
+
+			if (m_AudioControlsState == null)
+				m_AudioControlsState = new AudioControlsState();
 		}
 
 		public void OnDisable() {
