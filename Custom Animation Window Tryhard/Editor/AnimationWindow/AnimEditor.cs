@@ -34,6 +34,7 @@ namespace UnityEditor.Enemeteen {
 		[SerializeField] private AnimationWindowClipPopup m_ClipPopup;
 		[SerializeField] private AnimationEventTimeLine m_Events;
 		[SerializeField] private CurveEditor m_CurveEditor;
+		[SerializeField] private AudioWaveformWindow m_AudioWaveformWindow;
 		[SerializeField] private AnimEditorOverlay m_Overlay;
 		[SerializeField] private EditorWindow m_OwnerWindow;
 
@@ -334,6 +335,7 @@ namespace UnityEditor.Enemeteen {
 				InitializeDopeSheet();
 				InitializeEvents();
 				InitializeCurveEditor();
+				InitializeAudioWaveformWindow();
 				InitializeOverlay();
 			}
 
@@ -623,7 +625,13 @@ namespace UnityEditor.Enemeteen {
 
 		private void AudioWaveformOnGUI(Rect audioWaveformRect)
 		{
-			GUI.Box(audioWaveformRect, "this is where music would go!!!!!!!");
+			GUI.Box(audioWaveformRect,  GUIContent.none);
+
+			Rect noSlidersRect = new Rect(audioWaveformRect.xMin, audioWaveformRect.yMin, audioWaveformRect.width - kSliderThickness, audioWaveformRect.height - kSliderThickness);
+			
+			m_DopeSheet.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid
+			
+			//m_AudioWaveformWindow.DrawTicks(audioWaveformRect, m_State.frameRate);
 		}
 
 		private GenericMenu GenerateOptionsMenu() {
@@ -1239,6 +1247,12 @@ namespace UnityEditor.Enemeteen {
 			m_CurveEditor.shownArea = new Rect(1, 1, 1, 1);
 			m_CurveEditor.settings = settings;
 			m_CurveEditor.state = m_State;
+		}
+		
+		private void InitializeAudioWaveformWindow()
+		{
+			m_AudioWaveformWindow = new AudioWaveformWindow(false);
+			m_AudioWaveformWindow.shownArea = new Rect(1, 1, 1, 1);
 		}
 
 		// Called once during initialization of m_State
