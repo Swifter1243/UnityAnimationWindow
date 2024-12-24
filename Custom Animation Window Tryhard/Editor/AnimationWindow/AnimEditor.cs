@@ -625,11 +625,10 @@ namespace UnityEditor.Enemeteen {
 
 		private void AudioWaveformOnGUI(Rect audioWaveformRect)
 		{
-			GUI.Box(audioWaveformRect,  GUIContent.none);
+			GUI.Box(audioWaveformRect, GUIContent.none);
 
 			Rect noSlidersRect = new Rect(audioWaveformRect.xMin, audioWaveformRect.yMin, audioWaveformRect.width - kSliderThickness, audioWaveformRect.height - kSliderThickness);
-			
-			m_DopeSheet.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid
+			m_State.timeArea.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid
 			
 			//m_AudioWaveformWindow.DrawTicks(audioWaveformRect, m_State.frameRate);
 		}
@@ -1251,7 +1250,8 @@ namespace UnityEditor.Enemeteen {
 		
 		private void InitializeAudioWaveformWindow()
 		{
-			m_AudioWaveformWindow = new AudioWaveformWindow(false);
+			m_AudioWaveformWindow = new AudioWaveformWindow();
+			m_AudioWaveformWindow.SetTickMarkerRanges();
 			m_AudioWaveformWindow.shownArea = new Rect(1, 1, 1, 1);
 		}
 

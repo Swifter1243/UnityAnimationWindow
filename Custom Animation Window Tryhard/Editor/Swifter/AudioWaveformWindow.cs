@@ -5,7 +5,7 @@ using TimeArea = UnityEditor.Enemeteen.TimeArea;
 [System.Serializable]
 class AudioWaveformWindow : TimeArea
 {
-    public AudioWaveformWindow(bool minimalGUI) : base(minimalGUI)
+    public AudioWaveformWindow() : base(false)
     {
         
     }
