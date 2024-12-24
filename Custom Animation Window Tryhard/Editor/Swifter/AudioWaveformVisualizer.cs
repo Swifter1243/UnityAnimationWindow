@@ -8,8 +8,6 @@ class AudioWaveformVisualizer
 {
     [SerializeField] public AnimationWindowState state;
 
-    private const int SAMPLE_WIDTH = 2;
-
     public void Draw(Rect audioWaveformRect)
     {
         GL.Begin(GL.QUADS);
@@ -23,19 +21,13 @@ class AudioWaveformVisualizer
         float endY = audioWaveformRect.yMax;
         float middle = audioWaveformRect.center.y;
 
-        for (float x = startX; x < endX; x += SAMPLE_WIDTH)
+        for (float x = startX; x < endX; x++)
         {
             float time = state.PixelToTime(x - audioWaveformRect.xMin);
-
-            if (time < 0)
-            {
-                continue;
-            }
-            
             float sample = SampleAudioDataAtTime(time);
             
             float x1 = x;
-            float x2 = Math.Min(x + SAMPLE_WIDTH, endX);
+            float x2 = Math.Min(x + 1, endX);
             float y1 = Mathf.Lerp(middle, startY, sample);
             float y2 = Mathf.Lerp(middle, endY, sample);
             
@@ -44,10 +36,49 @@ class AudioWaveformVisualizer
         
         GL.End();
     }
+    
+    float SampleAudioClipAtTime(AudioClip clip, float time)
+    {
+        int sampleRate = clip.frequency;
+        int channels = clip.channels;
+
+        // Calculate the sample index based on the time
+        int sampleIndex = Mathf.FloorToInt(time * sampleRate * 2);
+
+        // Create an array to hold the samples
+        float[] samples = new float[channels];
+        
+        // Read a small block of samples
+        clip.GetData(samples, sampleIndex / channels);
+
+        // Return the first channel's amplitude (absolute value for volume)
+        return Mathf.Abs(samples[0]);
+    }
 
     private float SampleAudioDataAtTime(float time)
     {
-        return Mathf.Sin(time * 2 * Mathf.PI) * 0.5f + 0.5f;
+        if (time < 0)
+        {
+            return 0;
+        }
+        
+        AudioClip clip = state.audioControlsState.m_audioClip;
+        if (clip != null)
+        {
+            if (time >= clip.length)
+            {
+                return 0;
+            }
+            
+            // temporary measure to keep some consistency among peaks when moving
+            time = Mathf.Round(time * 100) / 100;
+            
+            return SampleAudioClipAtTime(clip, time);
+        }
+        else
+        {
+            return 0.1f;
+        }
     }
 
     private void DrawQuadFast(float x1, float x2, float y1, float y2)
