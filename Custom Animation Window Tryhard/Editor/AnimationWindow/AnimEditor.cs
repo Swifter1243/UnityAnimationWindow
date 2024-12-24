@@ -29,12 +29,12 @@ namespace UnityEditor.Enemeteen {
 
 		[SerializeField] private SplitterState m_HorizontalSplitter;
 		[SerializeField] private AnimationWindowState m_State;
+		[SerializeField] private AudioWaveformVisualizer m_AudioWaveformVisualizer;
 		[SerializeField] private DopeSheetEditor m_DopeSheet;
 		[SerializeField] private AnimationWindowHierarchy m_Hierarchy;
 		[SerializeField] private AnimationWindowClipPopup m_ClipPopup;
 		[SerializeField] private AnimationEventTimeLine m_Events;
 		[SerializeField] private CurveEditor m_CurveEditor;
-		[SerializeField] private AudioWaveformWindow m_AudioWaveformWindow;
 		[SerializeField] private AnimEditorOverlay m_Overlay;
 		[SerializeField] private EditorWindow m_OwnerWindow;
 
@@ -330,12 +330,12 @@ namespace UnityEditor.Enemeteen {
 				m_State = CreateInstance(typeof(AnimationWindowState)) as AnimationWindowState;
 				m_State.hideFlags = HideFlags.HideAndDontSave;
 				m_State.animEditor = this;
+				InitializeAudioWaveformVisualizer();
 				InitializeHorizontalSplitter();
 				InitializeClipSelection();
 				InitializeDopeSheet();
 				InitializeEvents();
 				InitializeCurveEditor();
-				InitializeAudioWaveformWindow();
 				InitializeOverlay();
 			}
 
@@ -344,6 +344,7 @@ namespace UnityEditor.Enemeteen {
 			m_State.timeArea = m_State.showCurveEditor ? (TimeArea) m_CurveEditor : m_DopeSheet;
 			m_DopeSheet.state = m_State;
 			m_ClipPopup.state = m_State;
+			m_AudioWaveformVisualizer.state = m_State;
 			m_Overlay.state = m_State;
 
 			m_CurveEditor.curvesUpdated += SaveChangedCurvesFromCurveEditor;
@@ -626,11 +627,10 @@ namespace UnityEditor.Enemeteen {
 		private void AudioWaveformOnGUI(Rect audioWaveformRect)
 		{
 			GUI.Box(audioWaveformRect, GUIContent.none);
-
-			Rect noSlidersRect = new Rect(audioWaveformRect.xMin, audioWaveformRect.yMin, audioWaveformRect.width - kSliderThickness, audioWaveformRect.height - kSliderThickness);
-			m_State.timeArea.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid
+			Rect noSlidersRect = new Rect(audioWaveformRect.xMin, audioWaveformRect.yMin, audioWaveformRect.width - kSliderThickness, audioWaveformRect.height);
 			
-			//m_AudioWaveformWindow.DrawTicks(audioWaveformRect, m_State.frameRate);
+			m_AudioWaveformVisualizer.Draw(noSlidersRect);
+			m_State.timeArea.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid
 		}
 
 		private GenericMenu GenerateOptionsMenu() {
@@ -1247,13 +1247,6 @@ namespace UnityEditor.Enemeteen {
 			m_CurveEditor.settings = settings;
 			m_CurveEditor.state = m_State;
 		}
-		
-		private void InitializeAudioWaveformWindow()
-		{
-			m_AudioWaveformWindow = new AudioWaveformWindow();
-			m_AudioWaveformWindow.SetTickMarkerRanges();
-			m_AudioWaveformWindow.shownArea = new Rect(1, 1, 1, 1);
-		}
 
 		// Called once during initialization of m_State
 		private void InitializeHorizontalSplitter() {
@@ -1277,6 +1270,11 @@ namespace UnityEditor.Enemeteen {
 
 			m_State.onStartLiveEdit += OnStartLiveEdit;
 			m_State.onEndLiveEdit += OnEndLiveEdit;
+		}
+		
+		private void InitializeAudioWaveformVisualizer()
+		{
+			m_AudioWaveformVisualizer = new AudioWaveformVisualizer();
 		}
 	}
 }
