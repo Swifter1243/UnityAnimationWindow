@@ -265,8 +265,6 @@ namespace UnityEditorInternal.Enemeteen {
 				return false;
 
 			if (!playing) {
-				state.audioControlsState.PlayAudio(time.time);
-				
 				AnimationMode.StartAnimationPlaybackMode();
 
 				m_PreviousUpdateTime = Time.realtimeSinceStartup;
@@ -274,6 +272,8 @@ namespace UnityEditorInternal.Enemeteen {
 				// Auto-Preview when start playing
 				StartPreview();
 				ClearCandidates();
+				
+				state.audioControlsState.StopAudio();
 			}
 
 			if (playFromBeginning) {
@@ -294,6 +294,8 @@ namespace UnityEditorInternal.Enemeteen {
 					}
 				}
 			}
+			
+			state.audioControlsState.PlayAudio(time.time);
 
 			return true;
 		}
