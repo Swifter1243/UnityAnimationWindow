@@ -222,7 +222,12 @@ namespace UnityEditor.Enemeteen {
 				Rect timerulerRect = GUILayoutUtility.GetRect(contentWidth, layoutRowHeight);
 				Rect eventsRect = GUILayoutUtility.GetRect(contentWidth, layoutRowHeight - 1);
 				Rect contentLayoutRect = GUILayoutUtility.GetRect(contentWidth, contentWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
-				Rect audioWaveformRect = GUILayoutUtility.GetRect(contentWidth, 80);
+
+				Rect? audioWaveformRect = null;
+				if (state.audioControlsState.m_isAudioEnabled)
+				{
+					audioWaveformRect = GUILayoutUtility.GetRect(contentWidth, 80);
+				}
 				
 				// MainContent must be done first since it resizes the Zoomable area.
 				MainContentOnGUI(contentLayoutRect);
@@ -248,6 +253,8 @@ namespace UnityEditor.Enemeteen {
 
 		private void AudioControlsOnGUI()
 		{
+			AudioControlsState audioControls = state.audioControlsState;
+			
 			GUIStyle audioControlsTitle =  new GUIStyle
 			{
 				alignment = TextAnchor.MiddleCenter,
@@ -261,8 +268,24 @@ namespace UnityEditor.Enemeteen {
 			};;
 					
 			GUILayout.Label("Audio Controls", audioControlsTitle);
+
+			GUILayout.Space(10);
+			audioControls.m_isAudioEnabled = GUILayout.Toggle(audioControls.m_isAudioEnabled, "Audio Enabled");
 			
-			
+			if (audioControls.m_isAudioEnabled)
+			{
+				GUILayout.Space(20);
+				
+				GUILayout.BeginHorizontal();
+				GUILayout.Label("Audio Clip: ");
+				audioControls.m_audioClip = EditorGUILayout.ObjectField(audioControls.m_audioClip, typeof(AudioClip), false) as AudioClip;
+				GUILayout.EndHorizontal();
+				
+				GUILayout.BeginHorizontal();
+				GUILayout.Label("Waveform Color: ");
+				audioControls.m_waveformColor = EditorGUILayout.ColorField(audioControls.m_waveformColor);
+				GUILayout.EndHorizontal();
+			}
 			
 			GUILayoutUtility.GetRect(hierarchyWidth, hierarchyWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
 			
@@ -656,10 +679,16 @@ namespace UnityEditor.Enemeteen {
 				RenderOutOfRangeOverlay(timeRulerRectNoScrollbar);
 		}
 
-		private void AudioWaveformOnGUI(Rect audioWaveformRect)
+		private void AudioWaveformOnGUI(Rect? audioWaveformRect)
 		{
-			GUI.Box(audioWaveformRect, GUIContent.none);
-			Rect noSlidersRect = new Rect(audioWaveformRect.xMin, audioWaveformRect.yMin, audioWaveformRect.width - kSliderThickness, audioWaveformRect.height);
+			if (!audioWaveformRect.HasValue)
+			{
+				return;
+			}
+			Rect guiRect = audioWaveformRect.Value;
+			
+			GUI.Box(guiRect, GUIContent.none);
+			Rect noSlidersRect = new Rect(guiRect.xMin, guiRect.yMin, guiRect.width - kSliderThickness, guiRect.height);
 			
 			m_AudioWaveformVisualizer.Draw(noSlidersRect);
 			m_State.timeArea.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid

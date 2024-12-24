@@ -15,7 +15,7 @@ class AudioWaveformVisualizer
         GL.Begin(GL.QUADS);
         
         HandleUtility.ApplyWireMaterial();
-        GL.Color(Color.blue);
+        GL.Color(state.audioControlsState.m_waveformColor);
 
         float startX = audioWaveformRect.xMin;
         float endX = audioWaveformRect.xMax;
