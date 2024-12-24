@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditorInternal.Enemeteen;
 using UnityEngine;
+using TimeArea = UnityEditor.Enemeteen.TimeArea;
 
 [System.Serializable]
 class AudioWaveformVisualizer
@@ -10,7 +11,7 @@ class AudioWaveformVisualizer
 
     public void Draw(Rect audioWaveformRect)
     {
-        GL.Begin(GL.QUADS);
+        GL.Begin(GL.LINES);
         
         HandleUtility.ApplyWireMaterial();
         GL.Color(state.audioControlsState.m_waveformColor);
@@ -26,12 +27,10 @@ class AudioWaveformVisualizer
             float time = state.PixelToTime(x - audioWaveformRect.xMin);
             float sample = SampleAudioDataAtTime(time);
             
-            float x1 = x;
-            float x2 = Math.Min(x + 1, endX);
             float y1 = Mathf.Lerp(middle, startY, sample);
             float y2 = Mathf.Lerp(middle, endY, sample);
             
-            DrawQuadFast(x1, x2, y1, y2);
+            DrawVerticalLineFast(x, y1, y2);
         }
         
         GL.End();
@@ -81,11 +80,8 @@ class AudioWaveformVisualizer
         }
     }
 
-    private void DrawQuadFast(float x1, float x2, float y1, float y2)
-    {
-        GL.Vertex(new Vector3(x1, y1));
-        GL.Vertex(new Vector3(x1, y2));
-        GL.Vertex(new Vector3(x2, y2));
-        GL.Vertex(new Vector3(x2, y1));
+    public static void DrawVerticalLineFast(float x, float minY, float maxY) {
+        GL.Vertex(new Vector3(x, minY, 0));
+        GL.Vertex(new Vector3(x, maxY, 0));
     }
 }
