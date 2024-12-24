@@ -183,23 +183,30 @@ namespace UnityEditor.Enemeteen {
 				// Left side
 				GUILayout.BeginVertical();
 
-				// First row of controls
-				GUILayout.BeginHorizontal(AnimationWindowStyles.animPlayToolBar);
-				PlayControlsOnGUI();
-				GUILayout.EndHorizontal();
+				if (state.audioControlsState.m_areControlsOpen)
+				{
+					AudioControlsOnGUI();
+				}
+				else
+				{
+					// First row of controls
+					GUILayout.BeginHorizontal(AnimationWindowStyles.animPlayToolBar);
+					PlayControlsOnGUI();
+					GUILayout.EndHorizontal();
 
-				// Second row of controls
-				GUILayout.BeginHorizontal(AnimationWindowStyles.animClipToolBar);
-				LinkOptionsOnGUI();
-				m_ClipPopup.OnGUI();
-				GUILayout.FlexibleSpace();
-				FrameRateInputFieldOnGUI();
-				FilterBySelectionButtonOnGUI();
-				AddKeyframeButtonOnGUI();
-				AddEventButtonOnGUI();
-				GUILayout.EndHorizontal();
+					// Second row of controls
+					GUILayout.BeginHorizontal(AnimationWindowStyles.animClipToolBar);
+					LinkOptionsOnGUI();
+					m_ClipPopup.OnGUI();
+					GUILayout.FlexibleSpace();
+					FrameRateInputFieldOnGUI();
+					FilterBySelectionButtonOnGUI();
+					AddKeyframeButtonOnGUI();
+					AddEventButtonOnGUI();
+					GUILayout.EndHorizontal();
 
-				HierarchyOnGUI();
+					HierarchyOnGUI();
+				}
 
 				// Bottom row of controls
 				using (new GUILayout.HorizontalScope(AnimationWindowStyles.toolbarBottom)) {
@@ -237,6 +244,28 @@ namespace UnityEditor.Enemeteen {
 
 				RenderEventTooltip();
 			}
+		}
+
+		private void AudioControlsOnGUI()
+		{
+			GUIStyle audioControlsTitle =  new GUIStyle
+			{
+				alignment = TextAnchor.MiddleCenter,
+				fontStyle = FontStyle.Bold,
+				normal =
+				{
+					textColor = Color.white,
+					background = Texture2D.grayTexture
+				},
+				fixedHeight = 20
+			};;
+					
+			GUILayout.Label("Audio Controls", audioControlsTitle);
+			
+			
+			
+			GUILayoutUtility.GetRect(hierarchyWidth, hierarchyWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
+			
 		}
 
 		private void MainContentOnGUI(Rect contentLayoutRect) {
@@ -324,6 +353,7 @@ namespace UnityEditor.Enemeteen {
 
 		public void OnEnable() {
 			hideFlags = HideFlags.HideAndDontSave;
+			
 			s_AnimationWindows.Add(this);
 
 			if (m_State == null) {
@@ -476,12 +506,14 @@ namespace UnityEditor.Enemeteen {
 		static GUIContent loopOnLabel = new GUIContent("Loop", "Loop the animation playback?");
 		static GUIContent loopOffLabel = new GUIContent("Once", "Loop the animation playback?");
 		static GUIContent startFromFirstFrameLabel = new GUIContent("|<-", "Start playing from the beginning.");
+		static GUIContent toggleAudioControlsLabel = new GUIContent("Audio", "Open audio controls.");
 
 		private void TabSelectionOnGUI() {
 			EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(speedLabel).x;
 			controlInterface.playbackSpeed = EditorGUILayout.FloatField(speedLabel, controlInterface.playbackSpeed);
 			if (GUILayout.Button(controlInterface.loop ? loopOnLabel : loopOffLabel, EditorStyles.toolbarButton)) controlInterface.loop = !controlInterface.loop;
 			controlInterface.playFromBeginning = GUILayout.Toggle(controlInterface.playFromBeginning, startFromFirstFrameLabel, EditorStyles.toolbarButton);
+			state.audioControlsState.m_areControlsOpen = GUILayout.Toggle(state.audioControlsState.m_areControlsOpen, toggleAudioControlsLabel, EditorStyles.toolbarButton);
 			EditorGUIUtility.labelWidth = 0;
 
 			//GUILayout.Label("play range start");

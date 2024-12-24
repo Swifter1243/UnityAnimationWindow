@@ -47,6 +47,7 @@ namespace UnityEditorInternal.Enemeteen {
 		[SerializeField] private AnimationWindowControl m_ControlInterface;
 		[SerializeField] private AnimationWindowControl m_OverrideControlInterface;
 		[SerializeField] private int[] m_SelectionFilter;
+		[SerializeField] private AudioControlsState m_AudioControlsState;
 
 		[NonSerialized] public Action onStartLiveEdit;
 		[NonSerialized] public Action onEndLiveEdit;
@@ -192,6 +193,11 @@ namespace UnityEditorInternal.Enemeteen {
 
 				m_OverrideControlInterface = value;
 			}
+		}
+
+		public AudioControlsState audioControlsState
+		{
+			get { return m_AudioControlsState; }
 		}
 
 
