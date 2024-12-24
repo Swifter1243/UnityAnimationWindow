@@ -214,12 +214,12 @@ namespace UnityEditor.Enemeteen {
 				Rect timerulerRect = GUILayoutUtility.GetRect(contentWidth, layoutRowHeight);
 				Rect eventsRect = GUILayoutUtility.GetRect(contentWidth, layoutRowHeight - 1);
 				Rect contentLayoutRect = GUILayoutUtility.GetRect(contentWidth, contentWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
-				Rect testRect = GUILayoutUtility.GetRect(contentWidth, 80);
+				Rect audioWaveformRect = GUILayoutUtility.GetRect(contentWidth, 80);
 				
 				// MainContent must be done first since it resizes the Zoomable area.
 				MainContentOnGUI(contentLayoutRect);
 				TimeRulerOnGUI(timerulerRect);
-				GUI.Box(testRect, "this is where music would go!!!!!!!");
+				AudioWaveformOnGUI(audioWaveformRect);
 				EventLineOnGUI(eventsRect);
 				GUILayout.EndVertical();
 
@@ -619,6 +619,11 @@ namespace UnityEditor.Enemeteen {
 
 			if (!m_State.disabled)
 				RenderOutOfRangeOverlay(timeRulerRectNoScrollbar);
+		}
+
+		private void AudioWaveformOnGUI(Rect audioWaveformRect)
+		{
+			GUI.Box(audioWaveformRect, "this is where music would go!!!!!!!");
 		}
 
 		private GenericMenu GenerateOptionsMenu() {
