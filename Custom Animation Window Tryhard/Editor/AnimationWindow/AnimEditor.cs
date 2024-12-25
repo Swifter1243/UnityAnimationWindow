@@ -301,7 +301,7 @@ namespace UnityEditor.Enemeteen {
 				
 				GUILayout.Space(10);
 				BeginHorizontal();
-				audioControls.m_bpmGuideEnabled = GUILayout.Toggle(audioControls.m_bpmGuideEnabled, "BPM Guide Enabled");
+				audioControls.m_bpmGuideEnabled = GUILayout.Toggle(audioControls.m_bpmGuideEnabled, "BPM Guide");
 				GUILayout.EndHorizontal();
 			
 				if (audioControls.m_bpmGuideEnabled)
