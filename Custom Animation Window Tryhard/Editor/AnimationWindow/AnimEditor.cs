@@ -33,6 +33,7 @@ namespace UnityEditor.Enemeteen {
 		[SerializeField] private DopeSheetEditor m_DopeSheet;
 		[SerializeField] private AnimationWindowHierarchy m_Hierarchy;
 		[SerializeField] private AnimationWindowClipPopup m_ClipPopup;
+		[SerializeField] private AudioControlsGUI m_AudioControlsGUI;
 		[SerializeField] private AnimationEventTimeLine m_Events;
 		[SerializeField] private CurveEditor m_CurveEditor;
 		[SerializeField] private AnimEditorOverlay m_Overlay;
@@ -185,7 +186,7 @@ namespace UnityEditor.Enemeteen {
 
 				if (state.audioControlsState.m_areControlsOpen)
 				{
-					AudioControlsOnGUI();
+					m_AudioControlsGUI.OnGUI(hierarchyWidth);
 				}
 				else
 				{
@@ -249,83 +250,6 @@ namespace UnityEditor.Enemeteen {
 
 				RenderEventTooltip();
 			}
-		}
-
-		private void AudioControlsOnGUI()
-		{
-			int indent = 0;
-			void DoIndent()
-			{
-				GUILayout.Space(10 * indent);
-			}
-
-			void BeginHorizontal()
-			{
-				GUILayout.BeginHorizontal();
-				DoIndent();
-			}
-			
-			AudioControlsState audioControls = state.audioControlsState;
-			
-			GUIStyle audioControlsTitle =  new GUIStyle
-			{
-				alignment = TextAnchor.MiddleCenter,
-				fontStyle = FontStyle.Bold,
-				normal =
-				{
-					textColor = Color.white,
-					background = Texture2D.grayTexture
-				},
-				fixedHeight = 20
-			};
-					
-			GUILayout.Label("Audio Controls", audioControlsTitle);
-
-			GUILayout.Space(10);
-			audioControls.m_isAudioEnabled = GUILayout.Toggle(audioControls.m_isAudioEnabled, "Audio Enabled");
-			
-			if (audioControls.m_isAudioEnabled)
-			{
-				indent++;
-				GUILayout.Space(10);
-
-				BeginHorizontal();
-				GUILayout.Label("Audio Clip: ");
-				audioControls.m_audioClip = EditorGUILayout.ObjectField(audioControls.m_audioClip, typeof(AudioClip), false) as AudioClip;
-				GUILayout.EndHorizontal();
-				
-				BeginHorizontal();
-				GUILayout.Label("Waveform Color: ");
-				audioControls.m_waveformColor = EditorGUILayout.ColorField(audioControls.m_waveformColor);
-				GUILayout.EndHorizontal();
-				
-				GUILayout.Space(10);
-				BeginHorizontal();
-				audioControls.m_bpmGuideEnabled = GUILayout.Toggle(audioControls.m_bpmGuideEnabled, "BPM Guide");
-				GUILayout.EndHorizontal();
-			
-				if (audioControls.m_bpmGuideEnabled)
-				{
-					indent++;
-					GUILayout.Space(10);
-					
-					BeginHorizontal();
-					GUILayout.Label("BPM: ");
-					audioControls.m_bpm = EditorGUILayout.FloatField(audioControls.m_bpm);
-					GUILayout.EndHorizontal();
-				
-					BeginHorizontal();
-					GUILayout.Label("Guide Color: ");
-					audioControls.m_bpmGuideColor = EditorGUILayout.ColorField(audioControls.m_bpmGuideColor);
-					GUILayout.EndHorizontal();
-				}
-
-				indent--;
-			}
-
-			indent--;
-			
-			GUILayoutUtility.GetRect(hierarchyWidth, hierarchyWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
 		}
 
 		private void MainContentOnGUI(Rect contentLayoutRect) {
@@ -420,7 +344,7 @@ namespace UnityEditor.Enemeteen {
 				m_State = CreateInstance(typeof(AnimationWindowState)) as AnimationWindowState;
 				m_State.hideFlags = HideFlags.HideAndDontSave;
 				m_State.animEditor = this;
-				InitializeAudioWaveformVisualizer();
+				InitializeAudioTools();
 				InitializeHorizontalSplitter();
 				InitializeClipSelection();
 				InitializeDopeSheet();
@@ -434,6 +358,7 @@ namespace UnityEditor.Enemeteen {
 			m_State.timeArea = m_State.showCurveEditor ? (TimeArea) m_CurveEditor : m_DopeSheet;
 			m_DopeSheet.state = m_State;
 			m_ClipPopup.state = m_State;
+			m_AudioControlsGUI.state = m_State;
 			m_AudioWaveformVisualizer.state = m_State;
 			m_Overlay.state = m_State;
 
@@ -1375,9 +1300,10 @@ namespace UnityEditor.Enemeteen {
 			m_State.onEndLiveEdit += OnEndLiveEdit;
 		}
 		
-		private void InitializeAudioWaveformVisualizer()
+		private void InitializeAudioTools()
 		{
 			m_AudioWaveformVisualizer = new AudioWaveformVisualizer();
+			m_AudioControlsGUI = new AudioControlsGUI();
 		}
 	}
 }
