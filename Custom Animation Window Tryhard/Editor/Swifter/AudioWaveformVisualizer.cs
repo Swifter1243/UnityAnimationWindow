@@ -75,31 +75,30 @@ class AudioWaveformVisualizer
         float endTime = PixelToTime(audioBPMRect, audioBPMRect.xMax);
 
         float bpm = state.audioControlsState.m_bpm;
-        float step = 60 / bpm;
+        float step = 60f / state.audioControlsState.m_bpmGuidePrecision / bpm;
         float startTimeBounded = Mathf.Ceil(startTime / step) * step;
         
         float pixelDistance = state.TimeToPixel(step) - state.zeroTimePixel;
         float minimumPixelDistance = BeatLabelWidth;
-        int visibleStep = 1;
         while (pixelDistance < minimumPixelDistance)
         {
-            visibleStep *= 2;
-            minimumPixelDistance /= 2;
+            step *= 2;
+            pixelDistance *= 2;
         }
 
         GUI.BeginGroup(audioBPMRect);
         
-        DrawBeatGuides(audioBPMRect, step, startTimeBounded, endTime, bpm, visibleStep);
+        DrawBeatGuides(audioBPMRect, step, startTimeBounded, endTime, bpm);
 
         if (state.audioControlsState.m_showBeatLabels)
         {
-            DrawBeatLabels(step, startTimeBounded, endTime, bpm, visibleStep);
+            DrawBeatLabels(step, startTimeBounded, endTime, bpm);
         }
         
         GUI.EndGroup();
     }
 
-    private void DrawBeatGuides(Rect audioBPMRect, float step, float startTimeBounded, float endTime, float bpm, int visibleStep)
+    private void DrawBeatGuides(Rect audioBPMRect, float step, float startTimeBounded, float endTime, float bpm)
     {
         GL.Begin(GL.LINES);
         HandleUtility.ApplyWireMaterial();
@@ -108,31 +107,28 @@ class AudioWaveformVisualizer
         for (float t = startTimeBounded; t < endTime; t += step)
         {
             float x = state.TimeToPixel(t);
-            int beat = Mathf.RoundToInt(SecondsToBeat(bpm, t));
-
-            if (beat % visibleStep != 0)
-            {
-                continue;
-            }
+            float floatBeat = SecondsToBeat(bpm, t);
             
-            DrawVerticalLineFast(x, 0, audioBPMRect.height);
+            if (Mathf.Abs(floatBeat % 1) < 0.001f) // exact beat
+            {
+                DrawVerticalLineFast(x, 0, audioBPMRect.height);
+            }
+            else // mid-beat
+            {
+                DrawVerticalLineFast(x, 5, audioBPMRect.height - 5);
+            }
         }
         GL.End();
     }
 
-    private void DrawBeatLabels(float step, float startTimeBounded, float endTime, float bpm, int visibleStep)
+    private void DrawBeatLabels(float step, float startTimeBounded, float endTime, float bpm)
     {
         GUIStyle labelStyle = s_beatLabelStyle;
             
         for (float t = startTimeBounded; t < endTime; t += step)
         {
             float x = state.TimeToPixel(t);
-            int beat = Mathf.RoundToInt(SecondsToBeat(bpm, t));
-                
-            if (beat % visibleStep != 0)
-            {
-                continue;
-            }
+            int beat = Mathf.FloorToInt(SecondsToBeat(bpm, t));
                 
             GUI.Label(new Rect(x + 4, -1, BeatLabelWidth, 20), beat.ToString(), labelStyle);
         }

@@ -114,6 +114,11 @@ class AudioControlsGUI
         GUILayout.Label("BPM: ");
         audioControls.m_bpm = EditorGUILayout.FloatField(audioControls.m_bpm);
         EndHorizontal();
+        
+        BeginHorizontal();
+        GUILayout.Label("Beat Precision: ");
+        audioControls.m_bpmGuidePrecision = EditorGUILayout.IntField(audioControls.m_bpmGuidePrecision);
+        EndHorizontal();
 
         BeginHorizontal();
         GUILayout.Label("Guide Color: ");

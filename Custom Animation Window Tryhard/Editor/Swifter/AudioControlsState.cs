@@ -10,6 +10,7 @@ public class AudioControlsState
     [SerializeField] public float m_bpm = 60f;
     [SerializeField] public Color m_bpmGuideColor = new Color(1, 1, 1, 1);
     [SerializeField] public bool m_showBeatLabels = false;
+    [SerializeField] public int m_bpmGuidePrecision = 1;
 
     private AudioClip _m_audioClip;
     private AudioClip m_audioClipVolumeAdjusted;
