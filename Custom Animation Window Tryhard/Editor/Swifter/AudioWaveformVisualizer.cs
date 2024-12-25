@@ -11,6 +11,16 @@ class AudioWaveformVisualizer
 
     public const int MaxWindowSamples = 100;
     private float[] _samples = new float[MaxWindowSamples];
+    
+    private GUIStyle s_beatLabelStyle =>
+        new GUIStyle
+        {
+            fontStyle = FontStyle.Bold,
+            normal =
+            {
+                textColor = state.audioControlsState.m_bpmGuideColor,
+            }
+        };
 
     public void DrawWaveform(Rect audioWaveformRect)
     {
@@ -84,11 +94,13 @@ class AudioWaveformVisualizer
 
         if (state.audioControlsState.m_showBeatLabels)
         {
+            GUIStyle labelStyle = s_beatLabelStyle;
+            
             for (float t = startTimeBounded; t < endTime; t += step)
             {
                 float x = state.TimeToPixel(t);
                 int beat = Mathf.RoundToInt(SecondsToBeat(bpm, t));
-                GUI.Label(new Rect(x + 3, -1, 40, 20), beat.ToString());
+                GUI.Label(new Rect(x + 4, -1, 40, 20), beat.ToString(), labelStyle);
             }
         }
         
