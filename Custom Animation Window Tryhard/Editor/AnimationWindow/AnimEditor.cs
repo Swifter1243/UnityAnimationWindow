@@ -652,8 +652,8 @@ namespace UnityEditor.Enemeteen {
 			GUI.Box(guiRect, GUIContent.none);
 			Rect noSlidersRect = new Rect(guiRect.xMin, guiRect.yMin, guiRect.width - kSliderThickness, guiRect.height);
 			
-			m_AudioWaveformVisualizer.DrawWaveform(noSlidersRect);
 			m_State.timeArea.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid
+			m_AudioWaveformVisualizer.DrawWaveform(noSlidersRect);
 
 			if (state.audioControlsState.m_bpmGuideEnabled)
 			{
