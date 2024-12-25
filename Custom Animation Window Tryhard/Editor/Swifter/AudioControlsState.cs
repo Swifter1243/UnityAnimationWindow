@@ -35,6 +35,11 @@ public class AudioControlsState
 
     public void PlayAudio(float time)
     {
+        if (!m_isAudioEnabled)
+        {
+            return;
+        }
+        
         AudioClipUtility.PlayAudioClip(_m_audioClip, time);
     }
 
