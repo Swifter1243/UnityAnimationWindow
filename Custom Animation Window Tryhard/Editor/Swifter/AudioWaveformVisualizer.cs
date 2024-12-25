@@ -54,25 +54,45 @@ class AudioWaveformVisualizer
         GL.End();
     }
 
+    private float SecondsToBeat(float bpm, float seconds)
+    {
+        return bpm / 60 * seconds;
+    }
+
     public void DrawBPMGuide(Rect audioBPMRect)
     {
         float startTime = Mathf.Max(0, PixelToTime(audioBPMRect, audioBPMRect.xMin));
         float endTime = PixelToTime(audioBPMRect, audioBPMRect.xMax);
-        
-        float step = 60 / state.audioControlsState.m_bpm;
+
+        float bpm = state.audioControlsState.m_bpm;
+        float step = 60 / bpm;
         float startTimeBounded = Mathf.Ceil(startTime / step) * step;
 
+        GUI.BeginGroup(audioBPMRect);
+        
         GL.Begin(GL.LINES);
         HandleUtility.ApplyWireMaterial();
         GL.Color(state.audioControlsState.m_bpmGuideColor);
         
         for (float t = startTimeBounded; t < endTime; t += step)
         {
-            float x = TimeToPixel(audioBPMRect, t);
-            DrawVerticalLineFast(x, audioBPMRect.yMin, audioBPMRect.yMax);
+            float x = state.TimeToPixel(t);
+            DrawVerticalLineFast(x, 0, audioBPMRect.height);
         }
         
         GL.End();
+
+        if (state.audioControlsState.m_showBeatLabels)
+        {
+            for (float t = startTimeBounded; t < endTime; t += step)
+            {
+                float x = state.TimeToPixel(t);
+                int beat = Mathf.RoundToInt(SecondsToBeat(bpm, t));
+                GUI.Label(new Rect(x + 3, -1, 40, 20), beat.ToString());
+            }
+        }
+        
+        GUI.EndGroup();
     }
 
     private float PixelToTime(Rect rect, float x)

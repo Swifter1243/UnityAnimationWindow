@@ -119,5 +119,10 @@ class AudioControlsGUI
         GUILayout.Label("Guide Color: ");
         audioControls.m_bpmGuideColor = EditorGUILayout.ColorField(audioControls.m_bpmGuideColor);
         EndHorizontal();
+        
+        BeginHorizontal();
+        GUILayout.Label("Beat Labels: ");
+        audioControls.m_showBeatLabels = EditorGUILayout.Toggle(audioControls.m_showBeatLabels);
+        EndHorizontal();
     }
 }
