@@ -24,6 +24,7 @@ class AudioWaveformVisualizer
         AudioClip clip = state.audioControlsState.m_audioClip;
         if (!clip)
         {
+            startX = Math.Max(0, state.TimeToPixel(0)) + startX;
             GL.Vertex(new Vector3(startX, middleY, 0));
             GL.Vertex(new Vector3(endX, middleY, 0));
         }
@@ -39,11 +40,11 @@ class AudioWaveformVisualizer
                     continue;
                 }
                 
-                float dist = halfHeight * sample;
-                dist = Mathf.Max(dist, 1);
+                float waveformHeight = halfHeight * sample;
+                waveformHeight = Mathf.Max(waveformHeight, 1);
             
-                float y1 = middleY - dist;
-                float y2 = middleY + dist;
+                float y1 = middleY - waveformHeight;
+                float y2 = middleY + waveformHeight;
             
                 DrawVerticalLineFast(x, y1, y2);
             }
