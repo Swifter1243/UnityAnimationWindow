@@ -108,13 +108,12 @@ class AudioWaveformVisualizer
         GUIStyle labelStyle = s_beatLabelStyle;
 
         float pixelDistance = state.TimeToPixel(step) - state.zeroTimePixel;
-            
-        float minimumAllowedWidth = BeatLabelWidth;
+        float minimumPixelDistance = BeatLabelWidth;
         int visibleStep = 1;
-        while (pixelDistance < minimumAllowedWidth)
+        while (pixelDistance < minimumPixelDistance)
         {
             visibleStep *= 2;
-            minimumAllowedWidth /= 2;
+            minimumPixelDistance /= 2;
         }
             
         for (float t = startTimeBounded; t < endTime; t += step)
