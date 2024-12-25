@@ -33,7 +33,7 @@ class AudioWaveformVisualizer
             for (float x = startX; x < endX; x++)
             {
                 float time = state.PixelToTime(x - audioWaveformRect.xMin);
-                float sample = SampleAudioDataAtTime(time);
+                float sample = SampleAudioDataAtTime(clip, time);
 
                 if (sample < 0)
                 {
@@ -53,28 +53,16 @@ class AudioWaveformVisualizer
         GL.End();
     }
 
-    private float SampleAudioDataAtTime(float time)
+    private float SampleAudioDataAtTime(AudioClip clip, float time)
     {
-        if (time < 0)
+        time = Mathf.Round(time * 100) / 100;
+            
+        if (time < 0 || time >= clip.length)
         {
             return -1;
         }
-        
-        AudioClip clip = state.audioControlsState.m_audioClip;
-        if (clip)
-        {
-            // temporary measure to keep some consistency among peaks when moving
-            time = Mathf.Round(time * 100) / 100;
             
-            if (time >= clip.length)
-            {
-                return -1;
-            }
-            
-            return AudioClipUtility.SampleClipAtTime(clip, time);
-        }
-        
-        return 0;
+        return AudioClipUtility.SampleClipAtTime(clip, time);
     }
 
     public static void DrawVerticalLineFast(float x, float minY, float maxY) {
