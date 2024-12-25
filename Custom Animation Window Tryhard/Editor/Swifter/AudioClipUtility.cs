@@ -18,6 +18,13 @@ public static class AudioClipUtility
         return Mathf.Abs(samples[0]);
     }
 
+    public static float[] GetClipSamples(AudioClip clip, int offset = 0)
+    {
+        float[] samples = new float[(clip.samples - offset) * clip.channels];
+        clip.GetData(samples, offset);
+        return samples;
+    }
+
     public static AudioClip CloneClip(AudioClip clip)
     {
         if (!clip) return null;

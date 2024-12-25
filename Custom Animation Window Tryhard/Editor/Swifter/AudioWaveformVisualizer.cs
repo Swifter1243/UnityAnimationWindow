@@ -9,6 +9,9 @@ class AudioWaveformVisualizer
 {
     [SerializeField] public AnimationWindowState state;
 
+    public const int MaxWindowSamples = 100;
+    private float[] _samples = new float[MaxWindowSamples];
+
     public void Draw(Rect audioWaveformRect)
     {
         GL.Begin(GL.LINES);
@@ -32,8 +35,7 @@ class AudioWaveformVisualizer
         {
             for (float x = startX; x < endX; x++)
             {
-                float time = state.PixelToTime(x - audioWaveformRect.xMin);
-                float sample = SampleAudioDataAtTime(clip, time);
+                float sample = SampleAudioDataAtPixel(audioWaveformRect, clip, x);
 
                 if (sample < 0)
                 {
@@ -53,16 +55,38 @@ class AudioWaveformVisualizer
         GL.End();
     }
 
-    private float SampleAudioDataAtTime(AudioClip clip, float time)
+    private float PixelToTime(Rect audioWaveformRect, float x)
     {
-        time = Mathf.Round(time * 100) / 100;
-            
-        if (time < 0 || time >= clip.length)
+        return state.PixelToTime(x - audioWaveformRect.xMin);
+    }
+
+    private float SampleAudioDataAtPixel(Rect audioWaveformRect, AudioClip clip, float x1)
+    {
+        float x2 = x1 + 1;
+        
+        float t1 = PixelToTime(audioWaveformRect, x1);
+        float t2 = PixelToTime(audioWaveformRect, x2);
+
+        if (t1 < 0 || t2 > clip.length)
         {
             return -1;
         }
-            
-        return AudioClipUtility.SampleClipAtTime(clip, time);
+        
+        int p1 = AudioClipUtility.SecondsToSamplePosition(clip, t1);
+        int p2 = AudioClipUtility.SecondsToSamplePosition(clip, t2);
+        
+        int width = p2 - p1;
+        width = Math.Min(width, MaxWindowSamples);
+        clip.GetData(_samples, p1);
+        
+        float s = 0;
+        
+        for (int i = 0; i < width; i++)
+        {
+            s += Math.Abs(_samples[i]);
+        }
+        s /= width;
+        return Mathf.Sqrt(s);
     }
 
     public static void DrawVerticalLineFast(float x, float minY, float maxY) {
