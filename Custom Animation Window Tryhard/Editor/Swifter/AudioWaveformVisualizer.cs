@@ -8,9 +8,9 @@ using TimeArea = UnityEditor.Enemeteen.TimeArea;
 class AudioWaveformVisualizer
 {
     [SerializeField] public AnimationWindowState state;
-
-    public const int MaxWindowSamples = 100;
     private float[] _samples = new float[MaxWindowSamples];
+    private const int MaxWindowSamples = 100;
+    private const int BeatLabelWidth = 20;
     
     private GUIStyle s_beatLabelStyle =>
         new GUIStyle
@@ -80,31 +80,55 @@ class AudioWaveformVisualizer
 
         GUI.BeginGroup(audioBPMRect);
         
+        DrawBeatGuides(audioBPMRect, startTimeBounded, endTime, step);
+
+        if (state.audioControlsState.m_showBeatLabels)
+        {
+            DrawBeatLabels(step, startTimeBounded, endTime, bpm);
+        }
+        
+        GUI.EndGroup();
+    }
+
+    private void DrawBeatGuides(Rect audioBPMRect, float startTimeBounded, float endTime, float step)
+    {
         GL.Begin(GL.LINES);
         HandleUtility.ApplyWireMaterial();
         GL.Color(state.audioControlsState.m_bpmGuideColor);
-        
         for (float t = startTimeBounded; t < endTime; t += step)
         {
             float x = state.TimeToPixel(t);
             DrawVerticalLineFast(x, 0, audioBPMRect.height);
         }
-        
         GL.End();
+    }
 
-        if (state.audioControlsState.m_showBeatLabels)
-        {
-            GUIStyle labelStyle = s_beatLabelStyle;
+    private void DrawBeatLabels(float step, float startTimeBounded, float endTime, float bpm)
+    {
+        GUIStyle labelStyle = s_beatLabelStyle;
+
+        float pixelDistance = state.TimeToPixel(step) - state.zeroTimePixel;
             
-            for (float t = startTimeBounded; t < endTime; t += step)
-            {
-                float x = state.TimeToPixel(t);
-                int beat = Mathf.RoundToInt(SecondsToBeat(bpm, t));
-                GUI.Label(new Rect(x + 4, -1, 40, 20), beat.ToString(), labelStyle);
-            }
+        float minimumAllowedWidth = BeatLabelWidth;
+        int visibleStep = 1;
+        while (pixelDistance < minimumAllowedWidth)
+        {
+            visibleStep *= 2;
+            minimumAllowedWidth /= 2;
         }
-        
-        GUI.EndGroup();
+            
+        for (float t = startTimeBounded; t < endTime; t += step)
+        {
+            float x = state.TimeToPixel(t);
+            int beat = Mathf.RoundToInt(SecondsToBeat(bpm, t));
+                
+            if (beat % visibleStep != 0)
+            {
+                continue;
+            }
+                
+            GUI.Label(new Rect(x + 4, -1, BeatLabelWidth, 20), beat.ToString(), labelStyle);
+        }
     }
 
     private float PixelToTime(Rect rect, float x)
