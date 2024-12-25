@@ -77,36 +77,7 @@ class AudioWaveformVisualizer
         float bpm = state.audioControlsState.m_bpm;
         float step = 60 / bpm;
         float startTimeBounded = Mathf.Ceil(startTime / step) * step;
-
-        GUI.BeginGroup(audioBPMRect);
         
-        DrawBeatGuides(audioBPMRect, startTimeBounded, endTime, step);
-
-        if (state.audioControlsState.m_showBeatLabels)
-        {
-            DrawBeatLabels(step, startTimeBounded, endTime, bpm);
-        }
-        
-        GUI.EndGroup();
-    }
-
-    private void DrawBeatGuides(Rect audioBPMRect, float startTimeBounded, float endTime, float step)
-    {
-        GL.Begin(GL.LINES);
-        HandleUtility.ApplyWireMaterial();
-        GL.Color(state.audioControlsState.m_bpmGuideColor);
-        for (float t = startTimeBounded; t < endTime; t += step)
-        {
-            float x = state.TimeToPixel(t);
-            DrawVerticalLineFast(x, 0, audioBPMRect.height);
-        }
-        GL.End();
-    }
-
-    private void DrawBeatLabels(float step, float startTimeBounded, float endTime, float bpm)
-    {
-        GUIStyle labelStyle = s_beatLabelStyle;
-
         float pixelDistance = state.TimeToPixel(step) - state.zeroTimePixel;
         float minimumPixelDistance = BeatLabelWidth;
         int visibleStep = 1;
@@ -115,6 +86,43 @@ class AudioWaveformVisualizer
             visibleStep *= 2;
             minimumPixelDistance /= 2;
         }
+
+        GUI.BeginGroup(audioBPMRect);
+        
+        DrawBeatGuides(audioBPMRect, step, startTimeBounded, endTime, bpm, visibleStep);
+
+        if (state.audioControlsState.m_showBeatLabels)
+        {
+            DrawBeatLabels(step, startTimeBounded, endTime, bpm, visibleStep);
+        }
+        
+        GUI.EndGroup();
+    }
+
+    private void DrawBeatGuides(Rect audioBPMRect, float step, float startTimeBounded, float endTime, float bpm, int visibleStep)
+    {
+        GL.Begin(GL.LINES);
+        HandleUtility.ApplyWireMaterial();
+        GL.Color(state.audioControlsState.m_bpmGuideColor);
+        
+        for (float t = startTimeBounded; t < endTime; t += step)
+        {
+            float x = state.TimeToPixel(t);
+            int beat = Mathf.RoundToInt(SecondsToBeat(bpm, t));
+
+            if (beat % visibleStep != 0)
+            {
+                continue;
+            }
+            
+            DrawVerticalLineFast(x, 0, audioBPMRect.height);
+        }
+        GL.End();
+    }
+
+    private void DrawBeatLabels(float step, float startTimeBounded, float endTime, float bpm, int visibleStep)
+    {
+        GUIStyle labelStyle = s_beatLabelStyle;
             
         for (float t = startTimeBounded; t < endTime; t += step)
         {
