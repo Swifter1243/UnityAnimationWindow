@@ -5,7 +5,7 @@ public class AudioControlsState
 {
     [SerializeField] public bool m_areControlsOpen = false;
     [SerializeField] public bool m_isAudioEnabled = false;
-    [SerializeField] public Color m_waveformColor = new Color(0.504717f, 0.8666667f, 1, 1);
+    [SerializeField] public Color m_waveformColor = new Color(0, 0.4f, 0.5f, 1);
     [SerializeField] public bool m_bpmGuideEnabled = false;
     [SerializeField] public float m_bpm = 60f;
     [SerializeField] public Color m_bpmGuideColor = new Color(1, 1, 1, 1);
