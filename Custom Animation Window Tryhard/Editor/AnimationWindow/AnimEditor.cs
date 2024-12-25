@@ -265,7 +265,7 @@ namespace UnityEditor.Enemeteen {
 					background = Texture2D.grayTexture
 				},
 				fixedHeight = 20
-			};;
+			};
 					
 			GUILayout.Label("Audio Controls", audioControlsTitle);
 
@@ -274,7 +274,7 @@ namespace UnityEditor.Enemeteen {
 			
 			if (audioControls.m_isAudioEnabled)
 			{
-				GUILayout.Space(20);
+				GUILayout.Space(10);
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Audio Clip: ");
@@ -287,8 +287,25 @@ namespace UnityEditor.Enemeteen {
 				GUILayout.EndHorizontal();
 			}
 			
-			GUILayoutUtility.GetRect(hierarchyWidth, hierarchyWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
+			GUILayout.Space(10);
+			audioControls.m_bpmGuideEnabled = GUILayout.Toggle(audioControls.m_bpmGuideEnabled, "BPM Guide Enabled");
 			
+			if (audioControls.m_bpmGuideEnabled)
+			{
+				GUILayout.Space(10);
+				
+				GUILayout.BeginHorizontal();
+				GUILayout.Label("BPM: ");
+				audioControls.m_bpm = EditorGUILayout.FloatField(audioControls.m_bpm);
+				GUILayout.EndHorizontal();
+				
+				GUILayout.BeginHorizontal();
+				GUILayout.Label("Guide Color: ");
+				audioControls.m_bpmGuideColor = EditorGUILayout.ColorField(audioControls.m_bpmGuideColor);
+				GUILayout.EndHorizontal();
+			}
+			
+			GUILayoutUtility.GetRect(hierarchyWidth, hierarchyWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
 		}
 
 		private void MainContentOnGUI(Rect contentLayoutRect) {
@@ -690,8 +707,13 @@ namespace UnityEditor.Enemeteen {
 			GUI.Box(guiRect, GUIContent.none);
 			Rect noSlidersRect = new Rect(guiRect.xMin, guiRect.yMin, guiRect.width - kSliderThickness, guiRect.height);
 			
-			m_AudioWaveformVisualizer.Draw(noSlidersRect);
+			m_AudioWaveformVisualizer.DrawWaveform(noSlidersRect);
 			m_State.timeArea.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid
+
+			if (state.audioControlsState.m_bpmGuideEnabled)
+			{
+				m_AudioWaveformVisualizer.DrawBPMGuide(noSlidersRect);
+			}
 		}
 
 		private GenericMenu GenerateOptionsMenu() {

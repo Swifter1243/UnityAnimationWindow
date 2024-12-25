@@ -12,10 +12,9 @@ class AudioWaveformVisualizer
     public const int MaxWindowSamples = 100;
     private float[] _samples = new float[MaxWindowSamples];
 
-    public void Draw(Rect audioWaveformRect)
+    public void DrawWaveform(Rect audioWaveformRect)
     {
         GL.Begin(GL.LINES);
-        
         HandleUtility.ApplyWireMaterial();
         GL.Color(state.audioControlsState.m_waveformColor);
 
@@ -55,9 +54,35 @@ class AudioWaveformVisualizer
         GL.End();
     }
 
-    private float PixelToTime(Rect audioWaveformRect, float x)
+    public void DrawBPMGuide(Rect audioBPMRect)
     {
-        return state.PixelToTime(x - audioWaveformRect.xMin);
+        float startTime = Mathf.Max(0, PixelToTime(audioBPMRect, audioBPMRect.xMin));
+        float endTime = PixelToTime(audioBPMRect, audioBPMRect.xMax);
+        
+        float step = 60 / state.audioControlsState.m_bpm;
+        float startTimeBounded = Mathf.Ceil(startTime / step) * step;
+
+        GL.Begin(GL.LINES);
+        HandleUtility.ApplyWireMaterial();
+        GL.Color(state.audioControlsState.m_bpmGuideColor);
+        
+        for (float t = startTimeBounded; t < endTime; t += step)
+        {
+            float x = TimeToPixel(audioBPMRect, t);
+            DrawVerticalLineFast(x, audioBPMRect.yMin, audioBPMRect.yMax);
+        }
+        
+        GL.End();
+    }
+
+    private float PixelToTime(Rect rect, float x)
+    {
+        return state.PixelToTime(x - rect.xMin);
+    }
+
+    private float TimeToPixel(Rect rect, float t)
+    {
+        return state.TimeToPixel(t) + rect.xMin;
     }
 
     private float SampleAudioDataAtPixel(Rect audioWaveformRect, AudioClip clip, float x1)
@@ -90,6 +115,9 @@ class AudioWaveformVisualizer
     }
 
     public static void DrawVerticalLineFast(float x, float minY, float maxY) {
+        if (Application.platform == RuntimePlatform.WindowsEditor) {
+            x = (int)x + 0.5f;
+        }
         GL.Vertex(new Vector3(x, minY, 0));
         GL.Vertex(new Vector3(x, maxY, 0));
     }
