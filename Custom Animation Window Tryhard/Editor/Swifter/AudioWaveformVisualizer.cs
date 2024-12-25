@@ -18,56 +18,62 @@ class AudioWaveformVisualizer
 
         float startX = audioWaveformRect.xMin;
         float endX = audioWaveformRect.xMax;
-        float startY = audioWaveformRect.yMin;
-        float endY = audioWaveformRect.yMax;
-        float middle = audioWaveformRect.center.y;
-
-        for (float x = startX; x < endX; x++)
+        float middleY = audioWaveformRect.center.y;
+        float halfHeight = audioWaveformRect.height / 2;
+        
+        AudioClip clip = state.audioControlsState.m_audioClip;
+        if (!clip)
         {
-            float time = state.PixelToTime(x - audioWaveformRect.xMin);
-            float sample = SampleAudioDataAtTime(time);
+            GL.Vertex(new Vector3(startX, middleY, 0));
+            GL.Vertex(new Vector3(endX, middleY, 0));
+        }
+        else
+        {
+            for (float x = startX; x < endX; x++)
+            {
+                float time = state.PixelToTime(x - audioWaveformRect.xMin);
+                float sample = SampleAudioDataAtTime(time);
+
+                if (sample < 0)
+                {
+                    continue;
+                }
+                
+                float dist = halfHeight * sample;
+                dist = Mathf.Max(dist, 1);
             
-            float y1 = Mathf.Lerp(middle, startY, sample);
-            float y2 = Mathf.Lerp(middle, endY, sample);
+                float y1 = middleY - dist;
+                float y2 = middleY + dist;
             
-            DrawVerticalLineFast(x, y1, y2);
+                DrawVerticalLineFast(x, y1, y2);
+            }
         }
         
         GL.End();
-    }
-    
-    float SampleAudioClipAtTime(AudioClip clip, float time)
-    {
-        int samplePosition = Mathf.FloorToInt(AudioClipUtility.SecondsToSamplePosition(clip, time));
-        float[] samples = new float[clip.channels];
-        clip.GetData(samples, samplePosition);
-        return Mathf.Abs(samples[0]);
     }
 
     private float SampleAudioDataAtTime(float time)
     {
         if (time < 0)
         {
-            return 0;
+            return -1;
         }
         
         AudioClip clip = state.audioControlsState.m_audioClip;
-        if (clip != null)
+        if (clip)
         {
-            if (time >= clip.length)
-            {
-                return 0;
-            }
-            
             // temporary measure to keep some consistency among peaks when moving
             time = Mathf.Round(time * 100) / 100;
             
-            return SampleAudioClipAtTime(clip, time);
+            if (time >= clip.length)
+            {
+                return -1;
+            }
+            
+            return AudioClipUtility.SampleClipAtTime(clip, time);
         }
-        else
-        {
-            return 0.1f;
-        }
+        
+        return 0;
     }
 
     public static void DrawVerticalLineFast(float x, float minY, float maxY) {

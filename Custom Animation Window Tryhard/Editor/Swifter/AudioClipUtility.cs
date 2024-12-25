@@ -10,6 +10,14 @@ public static class AudioClipUtility
        return Mathf.Clamp((int)(seconds * clip.frequency), 0, clip.samples);
     }
 
+    public static float SampleClipAtTime(AudioClip clip, float time)
+    {
+        int samplePosition = Mathf.FloorToInt(SecondsToSamplePosition(clip, time));
+        float[] samples = new float[clip.channels];
+        clip.GetData(samples, samplePosition);
+        return Mathf.Abs(samples[0]);
+    }
+
     public static AudioClip CloneClip(AudioClip clip)
     {
         if (!clip) return null;
