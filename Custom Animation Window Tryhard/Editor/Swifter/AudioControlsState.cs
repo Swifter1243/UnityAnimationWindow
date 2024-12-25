@@ -40,4 +40,10 @@ public class AudioControlsState
     {
         AudioClipUtility.StopAudioClip(_m_audioClip);
     }
+
+    public void RestartAudio(float time)
+    {
+        StopAudio();
+        PlayAudio(time);
+    }
 }
