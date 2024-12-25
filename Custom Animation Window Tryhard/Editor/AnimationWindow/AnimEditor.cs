@@ -253,6 +253,18 @@ namespace UnityEditor.Enemeteen {
 
 		private void AudioControlsOnGUI()
 		{
+			int indent = 0;
+			void DoIndent()
+			{
+				GUILayout.Space(10 * indent);
+			}
+
+			void BeginHorizontal()
+			{
+				GUILayout.BeginHorizontal();
+				DoIndent();
+			}
+			
 			AudioControlsState audioControls = state.audioControlsState;
 			
 			GUIStyle audioControlsTitle =  new GUIStyle
@@ -274,36 +286,44 @@ namespace UnityEditor.Enemeteen {
 			
 			if (audioControls.m_isAudioEnabled)
 			{
+				indent++;
 				GUILayout.Space(10);
-				
-				GUILayout.BeginHorizontal();
+
+				BeginHorizontal();
 				GUILayout.Label("Audio Clip: ");
 				audioControls.m_audioClip = EditorGUILayout.ObjectField(audioControls.m_audioClip, typeof(AudioClip), false) as AudioClip;
 				GUILayout.EndHorizontal();
 				
-				GUILayout.BeginHorizontal();
+				BeginHorizontal();
 				GUILayout.Label("Waveform Color: ");
 				audioControls.m_waveformColor = EditorGUILayout.ColorField(audioControls.m_waveformColor);
 				GUILayout.EndHorizontal();
-			}
-			
-			GUILayout.Space(10);
-			audioControls.m_bpmGuideEnabled = GUILayout.Toggle(audioControls.m_bpmGuideEnabled, "BPM Guide Enabled");
-			
-			if (audioControls.m_bpmGuideEnabled)
-			{
+				
 				GUILayout.Space(10);
-				
-				GUILayout.BeginHorizontal();
-				GUILayout.Label("BPM: ");
-				audioControls.m_bpm = EditorGUILayout.FloatField(audioControls.m_bpm);
+				BeginHorizontal();
+				audioControls.m_bpmGuideEnabled = GUILayout.Toggle(audioControls.m_bpmGuideEnabled, "BPM Guide Enabled");
 				GUILayout.EndHorizontal();
+			
+				if (audioControls.m_bpmGuideEnabled)
+				{
+					indent++;
+					GUILayout.Space(10);
+					
+					BeginHorizontal();
+					GUILayout.Label("BPM: ");
+					audioControls.m_bpm = EditorGUILayout.FloatField(audioControls.m_bpm);
+					GUILayout.EndHorizontal();
 				
-				GUILayout.BeginHorizontal();
-				GUILayout.Label("Guide Color: ");
-				audioControls.m_bpmGuideColor = EditorGUILayout.ColorField(audioControls.m_bpmGuideColor);
-				GUILayout.EndHorizontal();
+					BeginHorizontal();
+					GUILayout.Label("Guide Color: ");
+					audioControls.m_bpmGuideColor = EditorGUILayout.ColorField(audioControls.m_bpmGuideColor);
+					GUILayout.EndHorizontal();
+				}
+
+				indent--;
 			}
+
+			indent--;
 			
 			GUILayoutUtility.GetRect(hierarchyWidth, hierarchyWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
 		}
