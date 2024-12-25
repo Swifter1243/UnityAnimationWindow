@@ -10,7 +10,8 @@ class AudioWaveformVisualizer
     [SerializeField] public AnimationWindowState state;
     private float[] _samples = new float[MaxWindowSamples];
     private const int MaxWindowSamples = 100;
-    private const int BeatLabelWidth = 20;
+    private const int BeatLabelWidth = 10;
+    private const int SubBeatLineInset = 5;
     
     private GUIStyle s_beatLabelStyle =>
         new GUIStyle
@@ -76,7 +77,6 @@ class AudioWaveformVisualizer
 
         float bpm = state.audioControlsState.m_bpm;
         float step = 60f / state.audioControlsState.m_bpmGuidePrecision / bpm;
-        float startTimeBounded = Mathf.Ceil(startTime / step) * step;
         
         float pixelDistance = state.TimeToPixel(step) - state.zeroTimePixel;
         float minimumPixelDistance = BeatLabelWidth;
@@ -85,6 +85,7 @@ class AudioWaveformVisualizer
             step *= 2;
             pixelDistance *= 2;
         }
+        float startTimeBounded = Mathf.Ceil(startTime / step) * step;
 
         GUI.BeginGroup(audioBPMRect);
         
@@ -98,6 +99,13 @@ class AudioWaveformVisualizer
         GUI.EndGroup();
     }
 
+    private bool IsOnExactBeat(float beat)
+    {
+        bool closeDown = beat % 1 < 0.001f;
+        bool closeUp = (1 - beat % 1) < 0.001f;
+        return closeDown || closeUp;
+    }
+
     private void DrawBeatGuides(Rect audioBPMRect, float step, float startTimeBounded, float endTime, float bpm)
     {
         GL.Begin(GL.LINES);
@@ -107,15 +115,15 @@ class AudioWaveformVisualizer
         for (float t = startTimeBounded; t < endTime; t += step)
         {
             float x = state.TimeToPixel(t);
-            float floatBeat = SecondsToBeat(bpm, t);
+            float beat = SecondsToBeat(bpm, t);
             
-            if (Mathf.Abs(floatBeat % 1) < 0.001f) // exact beat
+            if (IsOnExactBeat(beat))
             {
                 DrawVerticalLineFast(x, 0, audioBPMRect.height);
             }
-            else // mid-beat
+            else
             {
-                DrawVerticalLineFast(x, 5, audioBPMRect.height - 5);
+                DrawVerticalLineFast(x, SubBeatLineInset, audioBPMRect.height - SubBeatLineInset);
             }
         }
         GL.End();
@@ -128,9 +136,12 @@ class AudioWaveformVisualizer
         for (float t = startTimeBounded; t < endTime; t += step)
         {
             float x = state.TimeToPixel(t);
-            int beat = Mathf.FloorToInt(SecondsToBeat(bpm, t));
-                
-            GUI.Label(new Rect(x + 4, -1, BeatLabelWidth, 20), beat.ToString(), labelStyle);
+            float beat = SecondsToBeat(bpm, t);
+
+            if (IsOnExactBeat(beat))
+            {
+                GUI.Label(new Rect(x + 4, -1, BeatLabelWidth, 20), Mathf.RoundToInt(beat).ToString(), labelStyle);   
+            }
         }
     }
 
