@@ -7,15 +7,18 @@ using System.Reflection;
 using System.Linq;
 using UnityEngine;
 //using UnityEditor;
-using UnityEditor.Enemeteen;
 using System.Collections.Generic;
 using System.Collections;
+using JetBrains.Annotations;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using CurveWrapper = UnityEditor.Enemeteen.CurveWrapper;
 using TimeArea = UnityEditor.Enemeteen.TimeArea;
 using AnimEditor = UnityEditor.Enemeteen.AnimEditor;
+using ICurveEditorState = UnityEditor.Enemeteen.ICurveEditorState;
+using UnityAnimationWindow.Swifter;
 
 namespace UnityEditorInternal.Enemeteen {
 	[System.Serializable]
@@ -48,6 +51,7 @@ namespace UnityEditorInternal.Enemeteen {
 		[SerializeField] private AnimationWindowControl m_OverrideControlInterface;
 		[SerializeField] private int[] m_SelectionFilter;
 		[SerializeField] private AudioControlsState m_AudioControlsState;
+		[SerializeField] private AudioOffsetContainer m_AudioOffsetContainer;
 
 		[NonSerialized] public Action onStartLiveEdit;
 		[NonSerialized] public Action onEndLiveEdit;
@@ -138,6 +142,15 @@ namespace UnityEditorInternal.Enemeteen {
 		public GameObject activeGameObject {
 			get {
 				return selection.gameObject;
+			}
+		}
+
+		public bool activeGameObjectIsAnimatable
+		{
+			get
+			{
+				GameObject go = activeGameObject;
+				return go && !EditorUtility.IsPersistent(go);
 			}
 		}
 
@@ -346,6 +359,7 @@ namespace UnityEditorInternal.Enemeteen {
 			if (onFrameRateChange != null)
 				onFrameRateChange(frameRate);
 
+			UpdateAudioOffsetContainer();
 			UpdateSelectionFilter();
 
 			// reset back time at 0 upon selection change.
@@ -353,6 +367,40 @@ namespace UnityEditorInternal.Enemeteen {
 
 			if (animEditor != null)
 				animEditor.OnSelectionChanged();
+		}
+
+		public void UpdateAudioOffsetContainer()
+		{
+			m_AudioOffsetContainer = null;
+			GameObject go = activeGameObject;
+			if (go)
+			{
+				m_AudioOffsetContainer = go.GetComponent<AudioOffsetContainer>();
+			}
+		}
+
+		[CanBeNull]
+		public AudioOffsetContainer GetAudioOffsetContainer()
+		{
+			if (m_AudioOffsetContainer != null && activeGameObjectIsAnimatable)
+			{
+				return m_AudioOffsetContainer;
+			}
+
+			return null;
+		}
+
+		public AudioOffsetContainer AddAudioOffsetContainer()
+		{
+			AudioOffsetContainer container = activeGameObject.AddComponent<AudioOffsetContainer>();
+			m_AudioOffsetContainer = container;
+			return container;
+		}
+
+		public void RemoveAudioOffsetContainer()
+		{
+			DestroyImmediate(m_AudioOffsetContainer);
+			m_AudioOffsetContainer = null;
 		}
 
 		public void OnSelectionUpdated() {

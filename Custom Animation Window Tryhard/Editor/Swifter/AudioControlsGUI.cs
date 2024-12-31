@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using UnityAnimationWindow.Swifter;
+using UnityEditor;
 using UnityEditorInternal.Enemeteen;
 using UnityEngine;
 
@@ -104,6 +105,50 @@ class AudioControlsGUI
             BPMGuideControlsOnGUI(audioControls);
             DecreaseIndent();
         }
+        
+        VerticalSpace();
+        AudioOffsetGUI();
+    }
+    
+    private void AudioOffsetGUI()
+    {
+        AudioOffsetContainer audioOffsetContainer = state.GetAudioOffsetContainer();
+
+        BeginHorizontal();
+        GUILayout.Label("Audio Offset");
+        
+        if (audioOffsetContainer)
+        {
+            if (GUILayout.Button("Remove Audio Offset"))
+            {
+                state.RemoveAudioOffsetContainer();
+            }
+            EndHorizontal();
+            
+            IncreaseIndent();
+            AudioOffsetOptions(audioOffsetContainer);
+            DecreaseIndent();
+        }
+        else
+        {
+            if (GUILayout.Button("Add Audio Offset"))
+            {
+                state.AddAudioOffsetContainer();
+            }
+            EndHorizontal();
+        }
+    }
+    
+    private bool isDragging = false;
+    private float dragStartValue = 0;
+    private Vector2 dragStartPosition;
+
+    private void AudioOffsetOptions(AudioOffsetContainer audioOffsetContainer)
+    {
+        BeginHorizontal();
+        GUILayout.Label("Offset: ");
+        audioOffsetContainer.offset = EditorGUILayout.FloatField(audioOffsetContainer.offset);
+        EndHorizontal();
     }
 
     private void BPMGuideControlsOnGUI(AudioControlsState audioControls)

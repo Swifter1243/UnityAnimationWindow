@@ -434,7 +434,7 @@ namespace UnityEditor.Enemeteen {
 			m_State.timeArea = m_DopeSheet;
 			m_State.timeArea.SetShownHRangeInsideMargins(0f, 1f);
 
-			bool animatableObject = m_State.activeGameObject && !EditorUtility.IsPersistent(m_State.activeGameObject);
+			bool animatableObject = m_State.activeGameObjectIsAnimatable;
 
 			if (animatableObject) {
 				var missingObjects = (!m_State.activeRootGameObject && !m_State.activeAnimationClip) ? AnimationWindowStyles.animatorAndAnimationClip.text : AnimationWindowStyles.animationClip.text;
