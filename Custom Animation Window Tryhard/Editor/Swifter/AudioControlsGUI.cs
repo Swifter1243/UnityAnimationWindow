@@ -170,5 +170,10 @@ class AudioControlsGUI
         GUILayout.Label("Beat Labels: ");
         audioControls.m_showBeatLabels = EditorGUILayout.Toggle(audioControls.m_showBeatLabels);
         EndHorizontal();
+        
+        BeginHorizontal();
+        GUILayout.Label("Latency Compensation (ms): ");
+        audioControls.m_latencyMilliseconds = EditorGUILayout.IntField(audioControls.m_latencyMilliseconds);
+        EndHorizontal();
     }
 }
