@@ -295,7 +295,7 @@ namespace UnityEditorInternal.Enemeteen {
 				}
 			}
 			
-			state.audioControlsState.PlayAudio(time.time);
+			state.audioControlsState.PlayAudio(time.time + state.GetAudioSecondOffset());
 
 			return true;
 		}

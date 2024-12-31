@@ -10,6 +10,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using JetBrains.Annotations;
+using UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using Object = UnityEngine.Object;
@@ -388,6 +389,20 @@ namespace UnityEditorInternal.Enemeteen {
 			}
 
 			return null;
+		}
+
+		public float GetAudioSecondOffset()
+		{
+			return TimingUtility.BeatsToSeconds(audioControlsState.m_bpm, GetAudioBeatOffset());
+		}
+		
+		public float GetAudioBeatOffset()
+		{
+			if (m_AudioOffsetContainer != null)
+			{
+				return m_AudioOffsetContainer.offset;
+			}
+			return 0;
 		}
 
 		public AudioOffsetContainer AddAudioOffsetContainer()

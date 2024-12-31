@@ -1,4 +1,6 @@
 ﻿using System;
+using UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter;
+using UnityAnimationWindow.Swifter;
 using UnityEditor;
 using UnityEditorInternal.Enemeteen;
 using UnityEngine;
@@ -65,11 +67,6 @@ class AudioWaveformVisualizer
         GL.End();
     }
 
-    private float SecondsToBeat(float bpm, float seconds)
-    {
-        return bpm / 60 * seconds;
-    }
-
     public void DrawBPMGuide(Rect audioBPMRect)
     {
         float startTime = Mathf.Max(0, PixelToTime(audioBPMRect, audioBPMRect.xMin));
@@ -119,7 +116,7 @@ class AudioWaveformVisualizer
         for (float t = startTimeBounded; t < endTime; t += step)
         {
             float x = state.TimeToPixel(t);
-            float beat = SecondsToBeat(bpm, t);
+            float beat = TimingUtility.SecondsToBeat(bpm, t) + state.GetAudioBeatOffset();
             
             if (IsOnExactBeat(beat))
             {
@@ -140,7 +137,7 @@ class AudioWaveformVisualizer
         for (float t = startTimeBounded; t < endTime; t += step)
         {
             float x = state.TimeToPixel(t);
-            float beat = SecondsToBeat(bpm, t);
+            float beat = TimingUtility.SecondsToBeat(bpm, t) + state.GetAudioBeatOffset();
 
             if (IsOnExactBeat(beat))
             {
@@ -170,6 +167,9 @@ class AudioWaveformVisualizer
         {
             return -1;
         }
+
+        t1 += state.GetAudioSecondOffset();
+        t2 += state.GetAudioSecondOffset();
         
         int p1 = AudioClipUtility.SecondsToSamplePosition(clip, t1);
         int p2 = AudioClipUtility.SecondsToSamplePosition(clip, t2);
