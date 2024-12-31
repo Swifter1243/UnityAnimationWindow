@@ -156,9 +156,10 @@ class AudioWaveformVisualizer
         return state.TimeToPixel(t) + rect.xMin;
     }
 
-    private float SampleAudioDataAtPixel(Rect audioWaveformRect, AudioClip clip, float x1)
+    private float SampleAudioDataAtPixel(Rect audioWaveformRect, AudioClip clip, float x)
     {
-        float x2 = x1 + 1;
+        float x1 = x - 0.5f;
+        float x2 = x + 0.5f;
         
         float t1 = PixelToTime(audioWaveformRect, x1);
         float t2 = PixelToTime(audioWaveformRect, x2);
