@@ -330,12 +330,12 @@ namespace UnityEditorInternal.Enemeteen {
 				if (newTime > state.maxTime)
 				{
 					newTime = state.minTime;
-					state.audioControlsState.RestartAudio(newTime);
+					state.audioControlsState.RestartAudio(newTime + state.GetAudioSecondOffset());
 				}
 				else if (newTime < state.minTime)
 				{
 					newTime = state.maxTime;
-					state.audioControlsState.RestartAudio(newTime);
+					state.audioControlsState.RestartAudio(newTime + state.GetAudioSecondOffset());
 				}
 			}
 			else {
