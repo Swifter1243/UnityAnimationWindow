@@ -138,10 +138,6 @@ class AudioControlsGUI
             EndHorizontal();
         }
     }
-    
-    private bool isDragging = false;
-    private float dragStartValue = 0;
-    private Vector2 dragStartPosition;
 
     private void AudioOffsetOptions(AudioOffsetContainer audioOffsetContainer)
     {
