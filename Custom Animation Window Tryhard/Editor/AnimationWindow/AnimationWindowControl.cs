@@ -302,6 +302,7 @@ namespace UnityEditorInternal.Enemeteen {
 
 		public void StopPlayback() {
 			state.audioControlsState.StopAudio();
+			state.particleSystemPlayback.Pause();
 			
 			if (AnimationMode.InAnimationPlaybackMode()) {
 				AnimationMode.StopAnimationPlaybackMode();
@@ -348,6 +349,8 @@ namespace UnityEditorInternal.Enemeteen {
 					StopPlayback();
 				}
 			}
+			
+			state.particleSystemPlayback.Seek(newTime);
 
 			m_Time = AnimationKeyTime.Time(Mathf.Clamp(newTime, state.minTime, state.maxTime), state.frameRate);
 

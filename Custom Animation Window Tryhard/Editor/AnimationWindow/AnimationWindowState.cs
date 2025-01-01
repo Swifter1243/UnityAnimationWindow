@@ -53,6 +53,7 @@ namespace UnityEditorInternal.Enemeteen {
 		[SerializeField] private int[] m_SelectionFilter;
 		[SerializeField] private AudioControlsState m_AudioControlsState;
 		[SerializeField] private AudioOffsetContainer m_AudioOffsetContainer;
+		[SerializeField] private ParticleSystemPlayback m_ParticleSystemPlayback;
 
 		[NonSerialized] public Action onStartLiveEdit;
 		[NonSerialized] public Action onEndLiveEdit;
@@ -209,10 +210,8 @@ namespace UnityEditorInternal.Enemeteen {
 			}
 		}
 
-		public AudioControlsState audioControlsState
-		{
-			get { return m_AudioControlsState; }
-		}
+		public AudioControlsState audioControlsState => m_AudioControlsState;
+		public ParticleSystemPlayback particleSystemPlayback => m_ParticleSystemPlayback;
 
 
 		public bool filterBySelection {
@@ -337,6 +336,9 @@ namespace UnityEditorInternal.Enemeteen {
 
 			if (m_AudioControlsState == null)
 				m_AudioControlsState = new AudioControlsState();
+			
+			if (m_ParticleSystemPlayback == null)
+				m_ParticleSystemPlayback = new ParticleSystemPlayback();
 		}
 
 		public void OnDisable() {
@@ -360,6 +362,7 @@ namespace UnityEditorInternal.Enemeteen {
 			if (onFrameRateChange != null)
 				onFrameRateChange(frameRate);
 
+			m_ParticleSystemPlayback.Setup(activeGameObject, activeAnimationClip);
 			UpdateAudioOffsetContainer();
 			UpdateSelectionFilter();
 
