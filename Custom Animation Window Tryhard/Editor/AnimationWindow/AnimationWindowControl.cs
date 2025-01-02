@@ -332,11 +332,13 @@ namespace UnityEditorInternal.Enemeteen {
 				{
 					newTime = state.minTime;
 					state.audioControlsState.RestartAudio(newTime + state.GetAudioSecondOffset());
+					state.particleSystemPlayback.Reset(newTime);
 				}
 				else if (newTime < state.minTime)
 				{
 					newTime = state.maxTime;
 					state.audioControlsState.RestartAudio(newTime + state.GetAudioSecondOffset());
+					state.particleSystemPlayback.Reset(newTime);
 				}
 			}
 			else {
@@ -349,12 +351,12 @@ namespace UnityEditorInternal.Enemeteen {
 					StopPlayback();
 				}
 			}
-			
-			state.particleSystemPlayback.Seek(newTime);
 
 			m_Time = AnimationKeyTime.Time(Mathf.Clamp(newTime, state.minTime, state.maxTime), state.frameRate);
 
 			ResampleAnimation();
+			
+			state.particleSystemPlayback.Seek(newTime);
 
 			return true;
 		}

@@ -18,7 +18,7 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
 
         private float GetNormalTime(float time)
         {
-            float lastActiveTime = m_ActiveTimes.Find(t => t >= time);
+            float lastActiveTime = m_ActiveTimes.FindLast(t => time >= t);
             return time - lastActiveTime;
         }
 
@@ -43,8 +43,10 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
 
             bool reversingTime = timeDelta < 0;
             bool reversingNormalTime = normalTimeDelta < 0;
+            bool normalTimeSkippedBackward = reversingNormalTime && !reversingTime;
+            bool normalTimeSkippedForward = !reversingNormalTime && reversingTime;
 
-            if (reversingNormalTime && !reversingTime)
+            if (normalTimeSkippedBackward || normalTimeSkippedForward)
             {
                 m_ParticleSystem.Simulate(normalTime, true, true);
             }
