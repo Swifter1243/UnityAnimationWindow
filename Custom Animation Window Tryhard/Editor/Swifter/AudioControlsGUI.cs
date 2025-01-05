@@ -114,6 +114,10 @@ class AudioControlsGUI
         BeginHorizontal();
         audioControls.m_waveformColor = EditorGUILayout.ColorField(s_WaveformColorField, audioControls.m_waveformColor);
         EndHorizontal();
+        
+        BeginHorizontal();
+        audioControls.m_latencyMilliseconds = EditorGUILayout.IntField(s_LatencyCompensationField, audioControls.m_latencyMilliseconds);
+        EndHorizontal();
 
         VerticalSpace();
         BeginHorizontal();
@@ -185,10 +189,6 @@ class AudioControlsGUI
         
         BeginHorizontal();
         audioControls.m_showBeatLabels = EditorGUILayout.Toggle(s_BeatLabelsField, audioControls.m_showBeatLabels);
-        EndHorizontal();
-        
-        BeginHorizontal();
-        audioControls.m_latencyMilliseconds = EditorGUILayout.IntField(s_LatencyCompensationField, audioControls.m_latencyMilliseconds);
         EndHorizontal();
     }
 }
