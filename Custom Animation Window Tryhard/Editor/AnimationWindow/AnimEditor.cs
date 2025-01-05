@@ -488,11 +488,9 @@ namespace UnityEditor.Enemeteen {
 			m_Events.DrawInstantTooltip(m_Position);
 		}
 		
-		static GUIContent startFromFirstFrameLabel = new GUIContent("|<-", "Start playing from the beginning.");
 		static GUIContent toggleAudioControlsLabel = new GUIContent("Settings", "Open settings for the animation window.");
 
 		private void TabSelectionOnGUI() {
-			controlInterface.playFromBeginning = GUILayout.Toggle(controlInterface.playFromBeginning, startFromFirstFrameLabel, EditorStyles.toolbarButton);
 			controlInterface.settingsOpen = GUILayout.Toggle(controlInterface.settingsOpen, toggleAudioControlsLabel, EditorStyles.toolbarButton);
 			EditorGUIUtility.labelWidth = 0;
 

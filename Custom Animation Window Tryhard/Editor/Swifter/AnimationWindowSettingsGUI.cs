@@ -27,6 +27,8 @@ class AnimationWindowSettingsGUI
         new GUIContent("Loop Animation", "Whether to loop the animation when it finishes.");
     private static GUIContent s_PlaybackSpeedField =
         new GUIContent("Playback Speed", "The speed to play back animations in the animation window.");
+    private static GUIContent s_PlayFromBeginningField =
+        new GUIContent("Play From Beginning", "When playback is started, play the animation from the beginning.");
     
     private static GUIContent s_AudioEnabledField =
         new GUIContent("Audio Enabled", "Whether to enable audio syncing with the animation.");
@@ -98,6 +100,10 @@ class AnimationWindowSettingsGUI
         
         BeginHorizontal();
         state.controlInterface.playbackSpeed = EditorGUILayout.FloatField(s_PlaybackSpeedField, state.controlInterface.playbackSpeed);
+        EndHorizontal();
+        
+        BeginHorizontal();
+        state.controlInterface.playFromBeginning = EditorGUILayout.Toggle(s_PlayFromBeginningField, state.controlInterface.playFromBeginning);
         EndHorizontal();
         
         AudioControlsState audioControls = state.audioControlsState;
