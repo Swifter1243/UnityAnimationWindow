@@ -113,6 +113,11 @@ class AnimationWindowSettingsGUI
             DecreaseIndent();
         }
 
+        if (GUI.changed)
+        {
+            state.audioControlsState.Save();
+        }
+
         GUILayoutUtility.GetRect(hierarchyWidth, hierarchyWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
     }
 

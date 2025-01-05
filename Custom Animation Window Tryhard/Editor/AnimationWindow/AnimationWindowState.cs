@@ -335,7 +335,10 @@ namespace UnityEditorInternal.Enemeteen {
 			m_ControlInterface.OnEnable();
 
 			if (m_AudioControlsState == null)
+			{
 				m_AudioControlsState = new AudioControlsState();
+				m_AudioControlsState.Load();
+			}
 			
 			if (m_ParticleSystemPlayback == null)
 				m_ParticleSystemPlayback = new ParticleSystemPlayback();
