@@ -312,6 +312,7 @@ namespace UnityEditorInternal.Enemeteen {
 			}
 		}
 
+		public bool settingsOpen = false;
 		public float playbackSpeed = 1;
 		public bool loop = true;
 		public bool playFromBeginning = false; // TO DO

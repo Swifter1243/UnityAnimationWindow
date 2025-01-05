@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using UnityEditor.ShortcutManagement;
 //using UnityEditorInternal;
 using UnityEditorInternal.Enemeteen;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace UnityEditor.Enemeteen {
@@ -33,7 +34,7 @@ namespace UnityEditor.Enemeteen {
 		[SerializeField] private DopeSheetEditor m_DopeSheet;
 		[SerializeField] private AnimationWindowHierarchy m_Hierarchy;
 		[SerializeField] private AnimationWindowClipPopup m_ClipPopup;
-		[SerializeField] private AudioControlsGUI m_AudioControlsGUI;
+		[FormerlySerializedAs("m_AudioControlsGUI")] [SerializeField] private AnimationWindowSettingsGUI m_AnimationWindowSettingsGUI;
 		[SerializeField] private AnimationEventTimeLine m_Events;
 		[SerializeField] private CurveEditor m_CurveEditor;
 		[SerializeField] private AnimEditorOverlay m_Overlay;
@@ -184,9 +185,9 @@ namespace UnityEditor.Enemeteen {
 				// Left side
 				GUILayout.BeginVertical();
 
-				if (state.audioControlsState.m_areControlsOpen)
+				if (controlInterface.settingsOpen)
 				{
-					m_AudioControlsGUI.OnGUI(hierarchyWidth);
+					m_AnimationWindowSettingsGUI.OnGUI(hierarchyWidth);
 				}
 				else
 				{
@@ -358,7 +359,7 @@ namespace UnityEditor.Enemeteen {
 			m_State.timeArea = m_State.showCurveEditor ? (TimeArea) m_CurveEditor : m_DopeSheet;
 			m_DopeSheet.state = m_State;
 			m_ClipPopup.state = m_State;
-			m_AudioControlsGUI.state = m_State;
+			m_AnimationWindowSettingsGUI.state = m_State;
 			m_AudioWaveformVisualizer.state = m_State;
 			m_Overlay.state = m_State;
 
@@ -486,19 +487,13 @@ namespace UnityEditor.Enemeteen {
 		private void RenderEventTooltip() {
 			m_Events.DrawInstantTooltip(m_Position);
 		}
-
-		static GUIContent speedLabel = new GUIContent("Speed", "Playback speed.");
-		static GUIContent loopOnLabel = new GUIContent("Loop", "Loop the animation playback?");
-		static GUIContent loopOffLabel = new GUIContent("Once", "Loop the animation playback?");
+		
 		static GUIContent startFromFirstFrameLabel = new GUIContent("|<-", "Start playing from the beginning.");
-		static GUIContent toggleAudioControlsLabel = new GUIContent("Audio", "Open audio controls.");
+		static GUIContent toggleAudioControlsLabel = new GUIContent("Settings", "Open settings for the animation window.");
 
 		private void TabSelectionOnGUI() {
-			EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(speedLabel).x;
-			controlInterface.playbackSpeed = EditorGUILayout.FloatField(speedLabel, controlInterface.playbackSpeed);
-			if (GUILayout.Button(controlInterface.loop ? loopOnLabel : loopOffLabel, EditorStyles.toolbarButton)) controlInterface.loop = !controlInterface.loop;
 			controlInterface.playFromBeginning = GUILayout.Toggle(controlInterface.playFromBeginning, startFromFirstFrameLabel, EditorStyles.toolbarButton);
-			state.audioControlsState.m_areControlsOpen = GUILayout.Toggle(state.audioControlsState.m_areControlsOpen, toggleAudioControlsLabel, EditorStyles.toolbarButton);
+			controlInterface.settingsOpen = GUILayout.Toggle(controlInterface.settingsOpen, toggleAudioControlsLabel, EditorStyles.toolbarButton);
 			EditorGUIUtility.labelWidth = 0;
 
 			//GUILayout.Label("play range start");
@@ -1303,7 +1298,7 @@ namespace UnityEditor.Enemeteen {
 		private void InitializeAudioTools()
 		{
 			m_AudioWaveformVisualizer = new AudioWaveformVisualizer();
-			m_AudioControlsGUI = new AudioControlsGUI();
+			m_AnimationWindowSettingsGUI = new AnimationWindowSettingsGUI();
 		}
 	}
 }

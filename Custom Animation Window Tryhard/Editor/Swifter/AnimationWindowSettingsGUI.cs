@@ -4,14 +4,14 @@ using UnityEditorInternal.Enemeteen;
 using UnityEngine;
 
 [System.Serializable]
-class AudioControlsGUI
+class AnimationWindowSettingsGUI
 {
     [SerializeField] public AnimationWindowState state;
     
     private const int IndentWidth = 10;
     private const int EdgeMargin = 5;
     
-    private GUIStyle s_audioControlsTitle => new GUIStyle
+    private GUIStyle s_MainTitleStyle => new GUIStyle
     {
         alignment = TextAnchor.MiddleCenter,
         fontStyle = FontStyle.Bold,
@@ -22,6 +22,11 @@ class AudioControlsGUI
         },
         fixedHeight = 20
     };
+
+    private static GUIContent s_LoopAnimationField =
+        new GUIContent("Loop Animation", "Whether to loop the animation when it finishes.");
+    private static GUIContent s_PlaybackSpeedField =
+        new GUIContent("Playback Speed", "The speed to play back animations in the animation window.");
     
     private static GUIContent s_AudioEnabledField =
         new GUIContent("Audio Enabled", "Whether to enable audio syncing with the animation.");
@@ -84,11 +89,19 @@ class AudioControlsGUI
     {
         _indent = EdgeMargin;
         
-        AudioControlsState audioControls = state.audioControlsState;
-        GUILayout.Label("Audio Controls", s_audioControlsTitle);
+        GUILayout.Label("Animation Window Settings", s_MainTitleStyle);
         
         VerticalSpace();
-
+        BeginHorizontal();
+        state.controlInterface.loop = EditorGUILayout.Toggle(s_LoopAnimationField, state.controlInterface.loop);
+        EndHorizontal();
+        
+        BeginHorizontal();
+        state.controlInterface.playbackSpeed = EditorGUILayout.FloatField(s_PlaybackSpeedField, state.controlInterface.playbackSpeed);
+        EndHorizontal();
+        
+        AudioControlsState audioControls = state.audioControlsState;
+        VerticalSpace();
         BeginHorizontal();
         audioControls.m_isAudioEnabled = EditorGUILayout.Toggle(s_AudioEnabledField, audioControls.m_isAudioEnabled);
         EndHorizontal();
