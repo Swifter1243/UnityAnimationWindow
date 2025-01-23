@@ -1,7 +1,8 @@
 {
     "name": "Assembly-CSharp-Editor-testable",
     "references": [
-        "GUID:7bb04b8f9a8e0b749bcdeb5ec76f3b70"
+        "GUID:7bb04b8f9a8e0b749bcdeb5ec76f3b70",
+        "SwifterRuntime"
     ],
     "includePlatforms": [
         "Editor"
