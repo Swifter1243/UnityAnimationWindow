@@ -8,14 +8,14 @@ public class AudioControlsState
     [SerializeField] public Color m_waveformColor = new Color(0, 0.4f, 0.5f, 1);
     [SerializeField] public bool m_bpmGuideEnabled = false;
     [SerializeField] public float m_bpm = 60f;
-    [SerializeField] public Color m_bpmGuideColor = new Color(1, 1, 1, 0.6f);
+    [SerializeField] public Color m_bpmGuideColor = new Color(1, 1, 1, 0.4f);
     [SerializeField] public bool m_showBeatLabels = false;
     [SerializeField] public int m_bpmGuidePrecision = 1;
     [SerializeField] public int m_latencyMilliseconds = 0;
 
     private AudioClip _m_audioClip;
     private AudioClip m_audioClipVolumeAdjusted;
-    
+
     public AudioClip m_audioClip
     {
         get => _m_audioClip;
@@ -28,15 +28,15 @@ public class AudioControlsState
             }
         }
     }
-    
-    private const string PlayerPrefsKey = "AudioControlsState_"; 
+
+    private const string PlayerPrefsKey = "AudioControlsState_";
 
     private bool LoadBool(string name, bool defaultValue = false)
     {
         int value = PlayerPrefs.GetInt(PlayerPrefsKey + name, defaultValue ? 1 : 0);
         return value == 1;
     }
-    
+
     private int LoadInt(string name, int defaultValue = 0)
     {
         return PlayerPrefs.GetInt(PlayerPrefsKey + name, defaultValue);
@@ -134,7 +134,7 @@ public class AudioControlsState
         {
             return;
         }
-        
+
         time += m_latencyMilliseconds / 1000f;
         AudioClipUtility.PlayAudioClip(_m_audioClip, time);
     }
