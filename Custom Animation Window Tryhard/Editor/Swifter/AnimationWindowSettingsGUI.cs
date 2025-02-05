@@ -7,10 +7,10 @@ using UnityEngine;
 class AnimationWindowSettingsGUI
 {
     [SerializeField] public AnimationWindowState state;
-    
+
     private const int IndentWidth = 10;
     private const int EdgeMargin = 5;
-    
+
     private GUIStyle s_MainTitleStyle => new GUIStyle
     {
         alignment = TextAnchor.MiddleCenter,
@@ -29,7 +29,7 @@ class AnimationWindowSettingsGUI
         new GUIContent("Playback Speed", "The speed to play back animations in the animation window.");
     private static GUIContent s_PlayFromBeginningField =
         new GUIContent("Play From Beginning", "When playback is started, play the animation from the beginning.");
-    
+
     private static GUIContent s_AudioEnabledField =
         new GUIContent("Audio Enabled", "Whether to enable audio syncing with the animation.");
     private static GUIContent s_AudioClipField =
@@ -38,7 +38,7 @@ class AnimationWindowSettingsGUI
         new GUIContent("BPM", "The beats per minute of the audio.");
     private static GUIContent s_WaveformColorField =
         new GUIContent("Waveform Color", "The color of the waveform for the audio visualization.");
-    
+
     private static GUIContent s_BpmGuideField =
         new GUIContent("BPM Guide Enabled", "Whether to enable BPM guides.");
     private static GUIContent s_BeatPrecisionField =
@@ -49,7 +49,7 @@ class AnimationWindowSettingsGUI
         new GUIContent("Beat Labels", "Whether the BPM guides should be numbered.");
     private static GUIContent s_LatencyCompensationField =
         new GUIContent("Latency Compensation", "Compensate for audio latency in milliseconds.");
-    
+
     private static GUIContent s_AudioOffsetField =
         new GUIContent("Offset", "How much to offset the audio by (in beats).");
 
@@ -64,12 +64,12 @@ class AnimationWindowSettingsGUI
     {
         _indent -= IndentWidth;
     }
-    
+
     private void DoIndent()
     {
         GUILayout.Space(_indent);
     }
-    
+
     private void BeginHorizontal()
     {
         GUILayout.BeginHorizontal();
@@ -86,26 +86,26 @@ class AnimationWindowSettingsGUI
     {
         GUILayout.Space(10);
     }
-    
+
     public void OnGUI(float hierarchyWidth)
     {
         _indent = EdgeMargin;
-        
+
         GUILayout.Label("Animation Window Settings", s_MainTitleStyle);
-        
+
         VerticalSpace();
         BeginHorizontal();
         state.controlInterface.loop = EditorGUILayout.Toggle(s_LoopAnimationField, state.controlInterface.loop);
         EndHorizontal();
-        
+
         BeginHorizontal();
         state.controlInterface.playbackSpeed = EditorGUILayout.FloatField(s_PlaybackSpeedField, state.controlInterface.playbackSpeed);
         EndHorizontal();
-        
+
         BeginHorizontal();
         state.controlInterface.playFromBeginning = EditorGUILayout.Toggle(s_PlayFromBeginningField, state.controlInterface.playFromBeginning);
         EndHorizontal();
-        
+
         AudioControlsState audioControls = state.audioControlsState;
         VerticalSpace();
         BeginHorizontal();
@@ -138,7 +138,7 @@ class AnimationWindowSettingsGUI
         BeginHorizontal();
         audioControls.m_waveformColor = EditorGUILayout.ColorField(s_WaveformColorField, audioControls.m_waveformColor);
         EndHorizontal();
-        
+
         BeginHorizontal();
         audioControls.m_latencyMilliseconds = EditorGUILayout.IntField(s_LatencyCompensationField, audioControls.m_latencyMilliseconds);
         EndHorizontal();
@@ -154,18 +154,18 @@ class AnimationWindowSettingsGUI
             BPMGuideControlsOnGUI(audioControls);
             DecreaseIndent();
         }
-        
+
         VerticalSpace();
         AudioOffsetGUI();
     }
-    
+
     private void AudioOffsetGUI()
     {
         AudioOffsetContainer audioOffsetContainer = state.GetAudioOffsetContainer();
 
         BeginHorizontal();
         GUILayout.Label("Audio Offset");
-        
+
         if (audioOffsetContainer)
         {
             if (GUILayout.Button("Remove Audio Offset"))
@@ -173,7 +173,7 @@ class AnimationWindowSettingsGUI
                 state.RemoveAudioOffsetContainer();
             }
             EndHorizontal();
-            
+
             IncreaseIndent();
             AudioOffsetOptions(audioOffsetContainer);
             DecreaseIndent();
@@ -200,9 +200,10 @@ class AnimationWindowSettingsGUI
         VerticalSpace();
 
         BeginHorizontal();
-        audioControls.m_bpm = EditorGUILayout.FloatField(s_BpmField, audioControls.m_bpm);
+        float inputBpm = EditorGUILayout.FloatField(s_BpmField, audioControls.m_bpm);
+        audioControls.m_bpm = Mathf.Max(inputBpm, 1);
         EndHorizontal();
-        
+
         BeginHorizontal();
         audioControls.m_bpmGuidePrecision = EditorGUILayout.IntField(s_BeatPrecisionField, audioControls.m_bpmGuidePrecision);
         EndHorizontal();
@@ -210,7 +211,7 @@ class AnimationWindowSettingsGUI
         BeginHorizontal();
         audioControls.m_bpmGuideColor = EditorGUILayout.ColorField(s_GuideColorField, audioControls.m_bpmGuideColor);
         EndHorizontal();
-        
+
         BeginHorizontal();
         audioControls.m_showBeatLabels = EditorGUILayout.Toggle(s_BeatLabelsField, audioControls.m_showBeatLabels);
         EndHorizontal();
