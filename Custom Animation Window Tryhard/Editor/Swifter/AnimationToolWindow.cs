@@ -53,9 +53,10 @@ class AnimationToolWindow
 		m_ScrollPosition = GUILayout.BeginScrollView(m_ScrollPosition);
 		GUILayout.Space(10);
 		m_currentTool = EditorGUILayout.Popup(m_currentTool, m_ToolsKeys);
-		GUILayout.FlexibleSpace();
 
 		AnimationTool selectedTool = m_Tools[m_ToolsKeys[m_currentTool]];
+		selectedTool.OnGUI();
+		GUILayout.FlexibleSpace();
 		if (!selectedTool.ValidateReady(m_state, out string error))
 		{
 			GUILayout.BeginHorizontal();
