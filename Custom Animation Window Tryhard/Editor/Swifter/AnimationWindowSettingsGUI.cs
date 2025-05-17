@@ -128,6 +128,7 @@ class AnimationWindowSettingsGUI
 
         ParticleSystemControlsState particleControls = state.particleSystemControlsState;
         VerticalSpace();
+        GUILayout.Label("\u26a0\ufe0f Experimental Feature");
         BeginHorizontal();
         bool isParticlePlaybackEnabled = EditorGUILayout.Toggle(s_IsParticlePlaybackEnabledField, particleControls.m_isParticlePlaybackEnabled);
         if (isParticlePlaybackEnabled != particleControls.m_isParticlePlaybackEnabled)
