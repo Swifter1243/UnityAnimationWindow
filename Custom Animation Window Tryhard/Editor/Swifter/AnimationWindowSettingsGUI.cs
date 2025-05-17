@@ -245,6 +245,10 @@ class AnimationWindowSettingsGUI
     {
         VerticalSpace();
 
+        GUILayout.Box("For now, " +
+            "particle playback must be recalculated when new particle systems are added/removed, " +
+            "or animations modifying the active/inactive state of a particle system are changed.");
+
         BeginHorizontal();
         if (GUILayout.Button("Recalculate Playback"))
         {
