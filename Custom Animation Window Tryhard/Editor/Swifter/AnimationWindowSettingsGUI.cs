@@ -11,6 +11,8 @@ class AnimationWindowSettingsGUI
     private const int IndentWidth = 10;
     private const int EdgeMargin = 5;
 
+    private Vector2 m_ScrollPosition = Vector2.zero;
+
     private GUIStyle s_MainTitleStyle => new GUIStyle
     {
         alignment = TextAnchor.MiddleCenter,
@@ -93,6 +95,8 @@ class AnimationWindowSettingsGUI
 
         GUILayout.Label("Animation Window Settings", s_MainTitleStyle);
 
+        m_ScrollPosition = GUILayout.BeginScrollView(m_ScrollPosition);
+
         VerticalSpace();
         BeginHorizontal();
         state.controlInterface.loop = EditorGUILayout.Toggle(s_LoopAnimationField, state.controlInterface.loop);
@@ -124,7 +128,7 @@ class AnimationWindowSettingsGUI
             state.audioControlsState.Save();
         }
 
-        GUILayoutUtility.GetRect(hierarchyWidth, hierarchyWidth, 0f, float.MaxValue, GUILayout.ExpandHeight(true));
+        GUILayout.EndScrollView();
     }
 
     private void AudioControlsOnGUI(AudioControlsState audioControls)
