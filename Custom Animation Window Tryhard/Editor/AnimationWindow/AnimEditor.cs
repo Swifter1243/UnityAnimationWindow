@@ -185,9 +185,13 @@ namespace UnityEditor.Enemeteen {
 				// Left side
 				GUILayout.BeginVertical();
 
-				if (controlInterface.settingsOpen)
+				if (controlInterface.subWindowState == AnimationWindowControl.SubWindow.Settings)
 				{
 					m_AnimationWindowSettingsGUI.OnGUI(hierarchyWidth);
+				}
+				else if (controlInterface.subWindowState == AnimationWindowControl.SubWindow.Tools)
+				{
+					// TODO
 				}
 				else
 				{
@@ -230,7 +234,7 @@ namespace UnityEditor.Enemeteen {
 				{
 					audioWaveformRect = GUILayoutUtility.GetRect(contentWidth, 80);
 				}
-				
+
 				// MainContent must be done first since it resizes the Zoomable area.
 				MainContentOnGUI(contentLayoutRect);
 				TimeRulerOnGUI(timerulerRect);
@@ -338,7 +342,7 @@ namespace UnityEditor.Enemeteen {
 
 		public void OnEnable() {
 			hideFlags = HideFlags.HideAndDontSave;
-			
+
 			s_AnimationWindows.Add(this);
 
 			if (m_State == null) {
@@ -487,11 +491,30 @@ namespace UnityEditor.Enemeteen {
 		private void RenderEventTooltip() {
 			m_Events.DrawInstantTooltip(m_Position);
 		}
-		
-		static GUIContent toggleAudioControlsLabel = new GUIContent("Settings", "Open settings for the animation window.");
 
-		private void TabSelectionOnGUI() {
-			controlInterface.settingsOpen = GUILayout.Toggle(controlInterface.settingsOpen, toggleAudioControlsLabel, EditorStyles.toolbarButton);
+		static GUIContent toggleAudioControlsLabel = new GUIContent("Settings", "Open settings for the animation window.");
+		static GUIContent toggleToolsLabel = new GUIContent("Tools", "Open tools for the animation window.");
+
+		private void TabSelectionOnGUI()
+		{
+			bool settingsOpen = controlInterface.subWindowState == AnimationWindowControl.SubWindow.Settings;
+			bool settingsToggle = GUILayout.Toggle(settingsOpen, toggleAudioControlsLabel, EditorStyles.toolbarButton);
+			if (settingsToggle != settingsOpen)
+			{
+				controlInterface.subWindowState = settingsOpen
+					? AnimationWindowControl.SubWindow.None
+					: AnimationWindowControl.SubWindow.Settings;
+			}
+
+			bool toolsOpen = controlInterface.subWindowState == AnimationWindowControl.SubWindow.Tools;
+			bool toolsToggle = GUILayout.Toggle(toolsOpen, toggleToolsLabel, EditorStyles.toolbarButton);
+			if (toolsToggle != toolsOpen)
+			{
+				controlInterface.subWindowState = toolsOpen
+					? AnimationWindowControl.SubWindow.None
+					: AnimationWindowControl.SubWindow.Tools;
+			}
+
 			EditorGUIUtility.labelWidth = 0;
 
 			//GUILayout.Label("play range start");
@@ -641,10 +664,10 @@ namespace UnityEditor.Enemeteen {
 				return;
 			}
 			Rect guiRect = audioWaveformRect.Value;
-			
+
 			GUI.Box(guiRect, GUIContent.none);
 			Rect noSlidersRect = new Rect(guiRect.xMin, guiRect.yMin, guiRect.width - kSliderThickness, guiRect.height);
-			
+
 			m_State.timeArea.TimeRuler(noSlidersRect, m_State.frameRate, false, true, kDisabledRulerAlpha, m_State.timeFormat);  // grid
 			m_AudioWaveformVisualizer.DrawWaveform(noSlidersRect);
 
@@ -1292,7 +1315,7 @@ namespace UnityEditor.Enemeteen {
 			m_State.onStartLiveEdit += OnStartLiveEdit;
 			m_State.onEndLiveEdit += OnEndLiveEdit;
 		}
-		
+
 		private void InitializeAudioTools()
 		{
 			m_AudioWaveformVisualizer = new AudioWaveformVisualizer();

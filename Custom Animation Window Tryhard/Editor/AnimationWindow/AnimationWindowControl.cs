@@ -314,7 +314,14 @@ namespace UnityEditorInternal.Enemeteen {
 			}
 		}
 
-		public bool settingsOpen = false;
+		public enum SubWindow
+		{
+			None,
+			Settings,
+			Tools
+		}
+
+		public SubWindow subWindowState = SubWindow.None;
 		public float playbackSpeed = 1;
 		public bool loop = true;
 		public bool playFromBeginning = false; // TO DO
