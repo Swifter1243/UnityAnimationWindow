@@ -9,6 +9,8 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
     public class ParticleSystemPlayback
     {
         private List<ParticleSystemPlayer> m_ParticleSystemPlayers = new List<ParticleSystemPlayer>();
+        private GameObject m_root;
+        private AnimationClip m_clip;
 
         private struct ActiveKeyframe
         {
@@ -78,12 +80,23 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
 
         public void Setup(GameObject root, AnimationClip clip)
         {
+            m_root = root;
+            m_clip = clip;
+
+            RecalculateTrackers();
+        }
+
+        public void RecalculateTrackers()
+        {
+            UnityEngine.Assertions.Assert.IsNotNull(m_clip, "The animation clip cannot be null for particle system playback.");
+            UnityEngine.Assertions.Assert.IsNotNull(m_root, "The root animation object cannot be null for particle system playback.");
+
             m_ParticleSystemPlayers.Clear();
 
             // Setup particle system data
-            var particleSystemTrackers =  CollectParticleSystems(root).Select(p =>
+            var particleSystemTrackers =  CollectParticleSystems(m_root).Select(p =>
             {
-                string path = AnimationUtility.CalculateTransformPath(p.transform, root.transform);
+                string path = AnimationUtility.CalculateTransformPath(p.transform, m_root.transform);
                 return new ParticleSystemActiveTracker(path, p);
             }).ToArray();
 
@@ -93,7 +106,7 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
             }
 
             // Compile SetActive keyframes
-            var activeKeyframes = CollectActiveKeyframes(clip).ToList();
+            var activeKeyframes = CollectActiveKeyframes(m_clip).ToList();
             activeKeyframes.Sort((a, b) => a.time.CompareTo(b.time));
 
             Dictionary<string, bool> objectActiveStates = new Dictionary<string, bool>();
