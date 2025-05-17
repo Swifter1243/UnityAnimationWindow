@@ -34,7 +34,7 @@ namespace UnityEditor.Enemeteen {
 		[SerializeField] private DopeSheetEditor m_DopeSheet;
 		[SerializeField] private AnimationWindowHierarchy m_Hierarchy;
 		[SerializeField] private AnimationWindowClipPopup m_ClipPopup;
-		[FormerlySerializedAs("m_AudioControlsGUI")] [SerializeField] private AnimationWindowSettingsGUI m_AnimationWindowSettingsGUI;
+		[SerializeField] private AnimationWindowSettingsGUI m_AnimationWindowSettingsGUI;
 		[SerializeField] private AnimationEventTimeLine m_Events;
 		[SerializeField] private CurveEditor m_CurveEditor;
 		[SerializeField] private AnimEditorOverlay m_Overlay;
