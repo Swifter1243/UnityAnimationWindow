@@ -349,6 +349,8 @@ namespace UnityEditorInternal.Enemeteen {
 				m_ParticleSystemControlsState = new ParticleSystemControlsState();
 				m_ParticleSystemControlsState.Load();
 			}
+
+			TrySetupParticleSystemPlayback();
 		}
 
 		public void OnDisable() {
@@ -372,8 +374,8 @@ namespace UnityEditorInternal.Enemeteen {
 			if (onFrameRateChange != null)
 				onFrameRateChange(frameRate);
 
-			if (activeGameObject != null && activeAnimationClip != null)
-				m_ParticleSystemPlayback.Setup(activeGameObject, activeAnimationClip);
+			TrySetupParticleSystemPlayback();
+
 			UpdateAudioOffsetContainer();
 			UpdateSelectionFilter();
 
@@ -382,6 +384,12 @@ namespace UnityEditorInternal.Enemeteen {
 
 			if (animEditor != null)
 				animEditor.OnSelectionChanged();
+		}
+
+		private void TrySetupParticleSystemPlayback()
+		{
+			if (activeGameObject != null && activeAnimationClip != null)
+				m_ParticleSystemPlayback.Setup(activeGameObject, activeAnimationClip);
 		}
 
 		public void UpdateAudioOffsetContainer()
