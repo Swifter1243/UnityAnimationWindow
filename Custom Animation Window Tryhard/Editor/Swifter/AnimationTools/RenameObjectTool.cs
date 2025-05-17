@@ -10,13 +10,13 @@ class RenameObjectTool : AnimationTool
 	{
 		errorMessage = string.Empty;
 
-		if (Selection.objects.Length == 0)
+		if (Selection.gameObjects.Length == 0)
 		{
 			errorMessage = "Please select an object first";
 			return false;
 		}
 
-		if (Selection.objects.Length > 1)
+		if (Selection.gameObjects.Length > 1)
 		{
 			errorMessage = "Too many objects selected, please only select one.";
 			return false;
