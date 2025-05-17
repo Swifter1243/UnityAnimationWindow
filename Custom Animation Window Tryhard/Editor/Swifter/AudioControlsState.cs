@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 [System.Serializable]
@@ -41,10 +42,10 @@ public class AudioControlsState : PlayerPrefsSerializer
         }
         m_waveformColor = LoadColor("waveformColor", new Color(0, 0.4f, 0.5f, 1));
         m_bpmGuideEnabled = LoadBool("bpmGuideEnabled");
-        m_bpm = LoadFloat("bpm", 60);
+        m_bpm = Mathf.Max(1, LoadFloat("bpm", 60));
         m_bpmGuideColor = LoadColor("bpmGuideColor", new Color(1, 1, 1, 0.6f));
         m_showBeatLabels = LoadBool("showBeatLabels");
-        m_bpmGuidePrecision = LoadInt("bpmGuidePrecision", 1);
+        m_bpmGuidePrecision = Math.Max(1, LoadInt("bpmGuidePrecision", 1));
         m_latencyMilliseconds = LoadInt("latencyMilliseconds");
     }
 

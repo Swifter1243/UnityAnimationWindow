@@ -1,4 +1,5 @@
-﻿using UnityAnimationWindow.Swifter;
+﻿using System;
+using UnityAnimationWindow.Swifter;
 using UnityEditor;
 using UnityEditorInternal.Enemeteen;
 using UnityEngine;
@@ -229,7 +230,8 @@ class AnimationWindowSettingsGUI
         EndHorizontal();
 
         BeginHorizontal();
-        audioControls.m_bpmGuidePrecision = EditorGUILayout.IntField(s_BeatPrecisionField, audioControls.m_bpmGuidePrecision);
+        int inputBpmGuidePrecision = EditorGUILayout.IntField(s_BeatPrecisionField, audioControls.m_bpmGuidePrecision);
+        audioControls.m_bpmGuidePrecision = Math.Max(inputBpmGuidePrecision, 1);
         EndHorizontal();
 
         BeginHorizontal();
