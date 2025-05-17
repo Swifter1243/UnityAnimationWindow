@@ -48,10 +48,9 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
 
             bool reversingTime = timeDelta < 0;
             bool reversingNormalTime = normalTimeDelta < 0;
-            bool normalTimeSkippedBackward = reversingNormalTime && !reversingTime;
             bool normalTimeSkippedForward = !reversingNormalTime && reversingTime;
 
-            if (normalTimeSkippedBackward || normalTimeSkippedForward)
+            if (normalTimeSkippedForward || reversingTime)
             {
                 m_ParticleSystem.Simulate(normalTime, true, true);
             }
