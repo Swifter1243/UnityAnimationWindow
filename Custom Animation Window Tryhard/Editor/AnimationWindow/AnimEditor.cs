@@ -35,6 +35,7 @@ namespace UnityEditor.Enemeteen {
 		[SerializeField] private AnimationWindowHierarchy m_Hierarchy;
 		[SerializeField] private AnimationWindowClipPopup m_ClipPopup;
 		[SerializeField] private AnimationWindowSettingsGUI m_AnimationWindowSettingsGUI;
+		[SerializeField] private AnimationToolWindow m_AnimationToolWindow;
 		[SerializeField] private AnimationEventTimeLine m_Events;
 		[SerializeField] private CurveEditor m_CurveEditor;
 		[SerializeField] private AnimEditorOverlay m_Overlay;
@@ -191,7 +192,7 @@ namespace UnityEditor.Enemeteen {
 				}
 				else if (controlInterface.subWindowState == AnimationWindowControl.SubWindow.Tools)
 				{
-					// TODO
+					m_AnimationToolWindow.OnGUI();
 				}
 				else
 				{
@@ -350,6 +351,7 @@ namespace UnityEditor.Enemeteen {
 				m_State.hideFlags = HideFlags.HideAndDontSave;
 				m_State.animEditor = this;
 				InitializeAudioTools();
+				m_AnimationToolWindow = new AnimationToolWindow();
 				InitializeHorizontalSplitter();
 				InitializeClipSelection();
 				InitializeDopeSheet();
@@ -364,6 +366,7 @@ namespace UnityEditor.Enemeteen {
 			m_DopeSheet.state = m_State;
 			m_ClipPopup.state = m_State;
 			m_AnimationWindowSettingsGUI.state = m_State;
+			m_AnimationToolWindow.Setup(state);
 			m_AudioWaveformVisualizer.state = m_State;
 			m_Overlay.state = m_State;
 
