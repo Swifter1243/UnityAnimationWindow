@@ -9,11 +9,16 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
         private readonly List<float> m_ActiveTimes;
         private float m_LastSeekTime = 0;
         private float m_LastSeekNormalTime = 0;
-        
+
         public ParticleSystemPlayer(ParticleSystem particleSystem, List<float> activeTimes)
         {
             m_ParticleSystem = particleSystem;
             m_ActiveTimes = activeTimes;
+        }
+
+        public bool HasBeenDeleted()
+        {
+            return m_ParticleSystem == null;
         }
 
         private float GetNormalTime(float time)
@@ -34,7 +39,7 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
             m_LastSeekNormalTime = normalTime;
             m_ParticleSystem.Simulate(normalTime);
         }
-        
+
         public void Seek(float time)
         {
             float normalTime = GetNormalTime(time);
@@ -54,7 +59,7 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
             {
                 m_ParticleSystem.Simulate(timeDelta, true, false);
             }
-            
+
             m_LastSeekNormalTime = normalTime;
             m_LastSeekTime = time;
         }

@@ -164,8 +164,26 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
             }
         }
 
+        private void CheckForDeadParticleSystems()
+        {
+            // Temporary measure until I can reliably recalculate playback.
+
+            for (int i = 0; i < m_ParticleSystemPlayers.Count; i++)
+            {
+                ParticleSystemPlayer ps = m_ParticleSystemPlayers[i];
+                if (ps.HasBeenDeleted())
+                {
+                    m_ParticleSystemPlayers.RemoveAt(i);
+                    i--;
+                    Debug.LogWarning("A child particle system has been deleted. Should you recalculate playback?");
+                }
+            }
+        }
+
         public void Pause()
         {
+            CheckForDeadParticleSystems();
+
             foreach (ParticleSystemPlayer particleSystemPlayer in m_ParticleSystemPlayers)
             {
                 particleSystemPlayer.Pause();
@@ -174,6 +192,8 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
 
         public void Seek(float time)
         {
+            CheckForDeadParticleSystems();
+
             foreach (ParticleSystemPlayer particleSystemPlayer in m_ParticleSystemPlayers)
             {
                 particleSystemPlayer.Seek(time);
@@ -182,6 +202,8 @@ namespace UnityAnimationWindow.Custom_Animation_Window_Tryhard.Editor.Swifter
 
         public void Reset(float time)
         {
+            CheckForDeadParticleSystems();
+
             foreach (ParticleSystemPlayer particleSystemPlayer in m_ParticleSystemPlayers)
             {
                 particleSystemPlayer.Reset(time);
