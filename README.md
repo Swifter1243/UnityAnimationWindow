@@ -1,4 +1,15 @@
 # UnityAnimationWindow
+
+This repository is a fork of forestrf's UnityAnimationWindow, which includes some new features:
+- Settings Window
+- Audio Syncing
+- BPM Guide
+- Particle Playback [Experimental]
+
+![aether animation](https://github.com/user-attachments/assets/8e6365d0-1133-43d8-a1f5-43fd010818e5)
+
+# Original README
+
 Adding functionality and fixes to the Unity Animation Window, needs Unity 2019.3.9 and above to function correctly
 
 ![Short video showing the main features](preview.gif)
